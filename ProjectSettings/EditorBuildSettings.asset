@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 3e241033fd0047e4bb7ab01ff0e0a313
+  - enabled: 1
+    path: Assets/Scenes/AnatomyVR.unity
+    guid: 8dbd41beea7c83f4885ecca2b620b390
+  - enabled: 1
+    path: Assets/Scenes/ControlsTest.unity
+    guid: 35020c488fc456545beb246ccc18c1f3
+  m_configObjects: {}
