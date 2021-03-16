@@ -175,8 +175,6 @@ public class UIPointerHandler : MonoBehaviour
                 }
             }
 
-            Player.Instance.StopHovering();
-
             doOnClick.Invoke();
         }
 

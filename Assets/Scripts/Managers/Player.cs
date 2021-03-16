@@ -130,8 +130,14 @@ public class Player : MonoBehaviour
                     UIPointerHandler UIInteractable = results[i].gameObject.GetComponent<UIPointerHandler>();
                     Teleporter teleporter = results[i].gameObject.GetComponent<Teleporter>();
                     PointerHighlight highlight = results[i].gameObject.GetComponent<PointerHighlight>();
+                    PointerButton btn = results[i].gameObject.GetComponent<PointerButton>();
 
-                    if (teleporter != null)
+                    if (btn != null)
+					{
+                        btn.Click(pointerData);
+                        found = true;
+                    }
+                    else if (teleporter != null)
                     {
                         teleporter.Click(pointerData);
                         found = true;

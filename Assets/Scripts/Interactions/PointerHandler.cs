@@ -25,8 +25,9 @@ public class PointerHandler : MonoBehaviour
 
     [HideInInspector] public bool hovering = false;
 
-    [Header("Custom Click Speed")]
+    [Header("Adjustments")]
     public float speedMultiplier = 1.0f;
+    public float interactPause = 0.2f;
 
     // Start is called before the first frame update
     void Start()
@@ -102,8 +103,8 @@ public class PointerHandler : MonoBehaviour
         if (hovering)
         {
             Player.Instance.StopHovering();
-
             doOnExitHover.Invoke();
+            hovering = false;
         }
     }
 
@@ -151,8 +152,13 @@ public class PointerHandler : MonoBehaviour
     private IEnumerator InteractablePause()
     {
         interactable = false;
-        yield return new WaitForSeconds(0.2f);
+        Player.Instance.StopHovering();
+        yield return new WaitForSeconds(interactPause);
         interactable = true;
+        if (hovering)
+		{
+            Player.Instance.isHovering = true;
+		}
     }
 
     public void Click(BaseEventData data)
