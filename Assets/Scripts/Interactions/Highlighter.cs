@@ -16,7 +16,6 @@ public class Highlighter : MonoBehaviour
 
     [Header("Whether the object reacts to hover events")]
     public bool hoverOn = true;
-    private bool completed = false;
     private bool isHovering = false;
 
     public UnityEvent onClick;
@@ -79,16 +78,6 @@ public class Highlighter : MonoBehaviour
 	{
 
 	}
-
-    public void ResetHighlight()
-    {
-        completed = false;
-    }
-
-    public void ChangeToCompletedColour()
-    {
-        completed = true;
-    }
 
     private void Highlight(bool on)
 	{

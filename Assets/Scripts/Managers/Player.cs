@@ -99,8 +99,10 @@ public class Player : MonoBehaviour
 		{
             prevTp.tube.SetActive(true);
         }
+        float y = transform.position.y;
 
-        transform.position = tp.teleportLocation.transform.position;
+        Vector3 newPos = tp.teleportLocation.transform.position;
+        transform.position = new Vector3(newPos.x, y, newPos.z);
         tp.tube.SetActive(false);
         prevTp = tp;
 
@@ -111,11 +113,10 @@ public class Player : MonoBehaviour
 
     private void Click()
 	{
-        PointerEventData pointerData = new PointerEventData(EventSystem.current);
-
-        pointerData.position = Input.mousePosition;
-
-        List<RaycastResult> results = new List<RaycastResult>();
+		PointerEventData pointerData = new PointerEventData(EventSystem.current) {
+			position = Input.mousePosition
+		};
+		List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(pointerData, results);
 
         if (results.Count > 0)
@@ -131,8 +132,14 @@ public class Player : MonoBehaviour
                     Teleporter teleporter = results[i].gameObject.GetComponent<Teleporter>();
                     PointerHighlight highlight = results[i].gameObject.GetComponent<PointerHighlight>();
                     PointerButton btn = results[i].gameObject.GetComponent<PointerButton>();
+                    PointerHazard hazard = results[i].gameObject.GetComponentInParent<PointerHazard>();
 
-                    if (btn != null)
+                    if (hazard != null)
+					{
+                        hazard.Click(pointerData);
+                        found = true;
+                    }
+                    else if (btn != null)
 					{
                         btn.Click(pointerData);
                         found = true;

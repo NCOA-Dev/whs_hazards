@@ -23,21 +23,34 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
+	private void Update()
+	{
+		// Lock cursor
+		if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked)
+		{
+			Cursor.lockState = CursorLockMode.Locked;
+			Cursor.visible = false;
+		}
+	}
+
 	public void PressButton(int level)
 	{
 		if (!loading && currentLvl != level)
 		{
+			// Elevator goes up if new level is higher than previous and vice versa
+			elevatorAnim.SetBool("up", level > currentLvl);
+
 			loading = true;
 			currentLvl = level;
 
 			if (elevatorAnim.GetBool("open"))
 			{ // If elevator open, wait for it to close
 				elevatorAnim.SetBool("open", false);
-				StartCoroutine(ElevatorLoad(currentLvl, 4f, NextLevel));
+				StartCoroutine(ElevatorLoad(currentLvl, 8f, NextLevel));
 			}
 			else
 			{ // If elevator already closed
-				StartCoroutine(ElevatorLoad(currentLvl, 3f, NextLevel));
+				StartCoroutine(ElevatorLoad(currentLvl, 6f, NextLevel));
 			}
 		}
 	}
@@ -80,7 +93,7 @@ public class GameManager : MonoBehaviour
 
 		// Load scene
 		yield return new WaitForSeconds(0.1f);
-		AsyncOperation asyncLoad = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(index);
+		AsyncOperation asyncLoad = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(index + 1);
 
 		while (!asyncLoad.isDone)
 		{
