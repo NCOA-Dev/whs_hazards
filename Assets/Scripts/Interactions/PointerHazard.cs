@@ -8,12 +8,10 @@ public class PointerHazard : PointerHandler
     [Header("Hazard Settings")]
     public string hazardName = "";
     public bool isHazard = false;
+    public int severity = 1;
 
     //[Header("Question Manager")]
     //[SerializeField] private QnManager qm;
-
-    [Header("Lists of meshes to highlight")]
-    [SerializeField] private MeshRenderer[] meshList;
 
     // Highlight emission colours to swap between
     [SerializeField] [ColorUsage(true, true)] private Color highlightCol = Color.white;
@@ -50,19 +48,10 @@ public class PointerHazard : PointerHandler
 
     public virtual void Start()
     {
-        if (meshList.Length == 0)
-        {
-            Debug.LogError("Please assign all variables to " + gameObject);
-        }
-        else
-        {
-			highlightObjs = CreateHighlightMeshes(highlightCol);
-			highlightDoneObjs = CreateHighlightMeshes(highlightDoneCol);
-            highlightWrongObjs = CreateHighlightMeshes(highlightWrongCol);
-			currentHighlights = highlightObjs;
-
-            //stopIncorrectAnwers = qm.learningMode;
-        }
+        highlightObjs = CreateHighlightMeshes(highlightCol);
+        highlightDoneObjs = CreateHighlightMeshes(highlightDoneCol);
+        highlightWrongObjs = CreateHighlightMeshes(highlightWrongCol);
+        currentHighlights = highlightObjs;
 
         // Initialize custom trigger events
         AddEventTriggerListener(
@@ -173,6 +162,7 @@ public class PointerHazard : PointerHandler
     private List<GameObject> CreateHighlightMeshes(Color col)
     {
         List<GameObject> newHighlightObjects = new List<GameObject>();
+        MeshRenderer[] meshList = GetComponentsInChildren<MeshRenderer>();
 
         foreach (MeshRenderer rend in meshList)
         {
@@ -181,10 +171,10 @@ public class PointerHazard : PointerHandler
                 GameObject obj;
                 obj = Instantiate(rend.gameObject, rend.transform);
 
-                Material mainMat = rend.GetComponent<Renderer>().material;
-                obj.GetComponent<Renderer>().material = mainMat;
-                Material mat = obj.GetComponent<Renderer>().material;
-                
+                // Create a new material
+				Material mat = new Material(Shader.Find("Standard"));
+                obj.GetComponent<Renderer>().material = mat;
+
                 // Remove color, smoothness, and activate set emission color
                 mat.color *= 0.001f;
                 mat.SetFloat("_Glossiness", 0f);
@@ -200,7 +190,10 @@ public class PointerHazard : PointerHandler
 				mat.DisableKeyword("_ALPHATEST_ON");
 				mat.SetInt("_ZWrite", 0);
 				mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-				mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+				mat.renderQueue = 3100;
+
+                // Re-apply to refresh shader
+                mat.shader = Shader.Find(mat.shader.name);
 
                 // Remove new object's children
                 foreach (Transform child in obj.transform)

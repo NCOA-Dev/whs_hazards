@@ -373,3 +373,7 @@ MonoBehaviour:
   interactPause: 0.2
   teleportLocation: {fileID: 8487063917940420153}
   tube: {fileID: 0}
+  changeColor: 1
+  origCol: {r: 0.13725491, g: 0.7105306, b: 0.7882353, a: 0.19607843}
+  hoverCol: {r: 0.5518868, g: 0.9460104, b: 1, a: 0.39215687}
+  clickCol: {r: 0, g: 0, b: 0, a: 0}

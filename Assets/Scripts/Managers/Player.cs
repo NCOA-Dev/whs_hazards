@@ -39,7 +39,6 @@ public class Player : MonoBehaviour
             prevTp = homeTp;
             prevTp.gameObject.SetActive(false);
         }
-        //ringBase.SetActive(false);
     }
 
     // Update is called once per frame
@@ -88,7 +87,6 @@ public class Player : MonoBehaviour
 		{
             clickRing.fillAmount = clickProgress;
         }
-        btnSpeedMultiplier = 1.0f;
         hasPaused = false;
         isPaused = false;
 	}

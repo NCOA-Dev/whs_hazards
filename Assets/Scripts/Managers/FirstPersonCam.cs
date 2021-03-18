@@ -12,16 +12,10 @@ public class FirstPersonCam : MonoBehaviour
 	void Update()
     {
         // Editor-only speed
-        if (Application.isPlaying)
-		{
+        #if UNITY_EDITOR
             speedH = 2;
             speedV = 2;
-		}
-
-        if (Cursor.visible)
-		{
-            Cursor.visible = false;
-        }
+        #endif
 
         yaw += speedH * Input.GetAxis("Mouse X");
         pitch -= speedV * Input.GetAxis("Mouse Y");
