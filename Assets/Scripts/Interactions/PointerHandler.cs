@@ -7,8 +7,14 @@ using UnityEngine.Events;
 [RequireComponent(typeof(EventTrigger))]
 public class PointerHandler : MonoBehaviour
 {
+    [Tooltip("Whether the object is currently interactable.")]
     public bool interactable;
+    
+    [Tooltip("Whether the object is interactable only once.")]
     public bool interactableOnce;
+
+    [Tooltip("Only cue hover events - for objects that dont want to be clicked.")]
+    public bool hoverOnly;
 
     [Header("Events")]
     public UnityEvent doOnHover;
@@ -87,7 +93,12 @@ public class PointerHandler : MonoBehaviour
 
     public void OnHover(BaseEventData eventData)
     {
-        if (interactable)
+        if (hoverOnly)
+		{
+            doOnHover.Invoke();
+            hovering = true;
+		}
+        else if (interactable)
         {
             Player.Instance.isHovering = true;
             Player.Instance.btnSpeedMultiplier = speedMultiplier;
@@ -96,11 +107,17 @@ public class PointerHandler : MonoBehaviour
 
             hovering = true;
         }
+
     }
 
     public void OnExitHover(BaseEventData eventData)
     {
-        if (hovering)
+        if (hoverOnly && hovering)
+		{
+            doOnExitHover.Invoke();
+            hovering = false;
+        }
+        else if (hovering)
         {
             Player.Instance.StopHovering();
             doOnExitHover.Invoke();
@@ -127,17 +144,17 @@ public class PointerHandler : MonoBehaviour
         if (interactable)
         {
             doOnClick.Invoke();
-        }
 
-        if (this.isActiveAndEnabled && !interactableOnce)
-        {
-            StartCoroutine(InteractablePause());
-        }
-        else
-		{
-            hovering = false;
-            interactable = false;
-            Player.Instance.StopHovering();
+            if (this.isActiveAndEnabled && !interactableOnce)
+            {
+                StartCoroutine(InteractablePause());
+            }
+            else
+            {
+                hovering = false;
+                interactable = false;
+                Player.Instance.StopHovering();
+            }
         }
     }
 

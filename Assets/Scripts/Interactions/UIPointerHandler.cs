@@ -16,9 +16,9 @@ public class UIPointerHandler : MonoBehaviour
     public bool interactableOnce;
     public bool hasOutline;
     public bool changeColor = false;
-    public Color origCol;
-    public Color hoverCol = Color.clear;
-    public Color clickCol = Color.clear;
+    public Color origCol = Color.white;
+    public Color hoverCol = Color.white;
+    public Color clickCol = Color.white;
     public Color activatedCol = Color.clear;
     public Color hintCol = Color.clear;
 

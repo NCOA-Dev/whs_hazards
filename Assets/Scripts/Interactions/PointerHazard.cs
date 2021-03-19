@@ -44,7 +44,7 @@ public class PointerHazard : PointerHandler
     public bool seeThrough = false;
 
     // Scale offset of hover effect
-    private Vector3 meshHoverScale = new Vector3(1.005f, 1.005f, 1.005f);
+    [SerializeField] private Vector3 meshHoverScale = Vector3.one;
 
     public virtual void Start()
     {
@@ -173,7 +173,6 @@ public class PointerHazard : PointerHandler
 
                 // Create a new material
 				Material mat = new Material(Shader.Find("Standard"));
-                obj.GetComponent<Renderer>().material = mat;
 
                 // Remove color, smoothness, and activate set emission color
                 mat.color *= 0.001f;
@@ -193,7 +192,10 @@ public class PointerHazard : PointerHandler
 				mat.renderQueue = 3100;
 
                 // Re-apply to refresh shader
-                mat.shader = Shader.Find(mat.shader.name);
+                //mat.shader = Shader.Find(mat.shader.name);
+                mat.EnableKeyword("_EMISSION");
+
+                obj.GetComponent<Renderer>().material = mat;
 
                 // Remove new object's children
                 foreach (Transform child in obj.transform)

@@ -132,6 +132,13 @@ public class Player : MonoBehaviour
                     PointerButton btn = results[i].gameObject.GetComponent<PointerButton>();
                     PointerHazard hazard = results[i].gameObject.GetComponentInParent<PointerHazard>();
 
+
+
+                    if (UIInteractable != null)
+                    {
+                        UIInteractable.Click(pointerData);
+                        found = true;
+                    }
                     if (hazard != null)
 					{
                         hazard.Click(pointerData);
@@ -155,11 +162,6 @@ public class Player : MonoBehaviour
                     else if (interactable != null)
                     {
                         interactable.Click(pointerData);
-                        found = true;
-                    }
-                    else if (UIInteractable != null)
-                    {
-                        UIInteractable.Click(pointerData);
                         found = true;
                     }
                 }

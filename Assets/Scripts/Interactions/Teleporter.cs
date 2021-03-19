@@ -46,6 +46,8 @@ public class Teleporter : PointerHandler
 		{
 			objMat.SetColor("_TintColor", hoverCol);
 		}
+
+		interactable = true;
 	}
 
     public new virtual void OnExitHover(BaseEventData eventData)
