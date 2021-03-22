@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &2104916456412375642
+--- !u!1001 &3419359869992617042
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -115,17 +115,22 @@ PrefabInstance:
     - target: {fileID: 2660480027768149961, guid: f5f58314d95413a4a9397ec0609ec60e,
         type: 3}
       propertyPath: m_text
-      value: Hazard
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2660480027768149961, guid: f5f58314d95413a4a9397ec0609ec60e,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2660480027768149961, guid: f5f58314d95413a4a9397ec0609ec60e,
         type: 3}
       propertyPath: m_fontSizeBase
-      value: 16
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8003174641861479904, guid: f5f58314d95413a4a9397ec0609ec60e,
         type: 3}
       propertyPath: m_Name
-      value: ClipButtonL
+      value: ClipButtonRResponse
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5f58314d95413a4a9397ec0609ec60e, type: 3}

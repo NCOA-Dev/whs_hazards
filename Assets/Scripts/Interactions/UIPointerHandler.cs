@@ -38,7 +38,7 @@ public class UIPointerHandler : MonoBehaviour
     //[SerializeField] private GameObject dragSound = null;
     //[SerializeField] private GameObject dropSound = null;
 
-    private bool intOnceStart = false;
+    private bool startedInteractable = false;
     private bool hovering = false;
     private Image img;
 
@@ -46,6 +46,11 @@ public class UIPointerHandler : MonoBehaviour
 	{
         img = GetComponent<Image>();
         origCol = img.color;
+
+        if (startedInteractable)
+		{
+            interactable = true;
+		}
     }
 
     // Start is called before the first frame update
@@ -75,6 +80,8 @@ public class UIPointerHandler : MonoBehaviour
             GetComponent<EventTrigger>(),
             EventTriggerType.PointerClick,
             OnClick);
+
+        startedInteractable = interactable;
     }
     private void OnDisable()
     {
@@ -132,6 +139,7 @@ public class UIPointerHandler : MonoBehaviour
 
             doOnExitHover.Invoke();
         }
+        hovering = false;
     }
 
     private void OnDown(BaseEventData eventData)
@@ -152,6 +160,8 @@ public class UIPointerHandler : MonoBehaviour
     {
         if (interactable)
         {
+            doOnClick.Invoke();
+
             if (changeColor)
             {
                 img.color = clickCol;
@@ -161,27 +171,12 @@ public class UIPointerHandler : MonoBehaviour
             {
                 interactable = false;
                 changeColor = false;
+                Player.Instance.StopHovering();
             }
-
-            // Exclusive physics obj
-            if (GetComponent<Rigidbody>())
-            {
-                Rigidbody rb = GetComponent<Rigidbody>();
-
-                if (rb)
-                {
-                    rb.isKinematic = false;
-                    rb.AddForce(Player.Instance.cam.transform.forward * 5f, ForceMode.Impulse);
-                }
+            else if (this.isActiveAndEnabled)
+			{
+                StartCoroutine(InteractablePause());
             }
-
-            doOnClick.Invoke();
-        }
-
-
-        if (this.isActiveAndEnabled)
-        {
-            StartCoroutine(InteractablePause());
         }
     }
 

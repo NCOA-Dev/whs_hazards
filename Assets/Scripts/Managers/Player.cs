@@ -132,8 +132,6 @@ public class Player : MonoBehaviour
                     PointerButton btn = results[i].gameObject.GetComponent<PointerButton>();
                     PointerHazard hazard = results[i].gameObject.GetComponentInParent<PointerHazard>();
 
-
-
                     if (UIInteractable != null)
                     {
                         UIInteractable.Click(pointerData);

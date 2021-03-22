@@ -115,12 +115,22 @@ PrefabInstance:
     - target: {fileID: 2660480027768149961, guid: f5f58314d95413a4a9397ec0609ec60e,
         type: 3}
       propertyPath: m_text
-      value: Risk
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2660480027768149961, guid: f5f58314d95413a4a9397ec0609ec60e,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2660480027768149961, guid: f5f58314d95413a4a9397ec0609ec60e,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8003174641861479904, guid: f5f58314d95413a4a9397ec0609ec60e,
         type: 3}
       propertyPath: m_Name
-      value: ClipButtonM
+      value: ClipButtonMRisk
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5f58314d95413a4a9397ec0609ec60e, type: 3}

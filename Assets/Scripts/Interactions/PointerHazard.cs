@@ -6,9 +6,10 @@ using UnityEngine.EventSystems;
 public class PointerHazard : PointerHandler
 {
     [Header("Hazard Settings")]
-    public string hazardName = "";
+    public string hazardDesc = "";
     public bool isHazard = false;
     public int severity = 1;
+    [SerializeField] private HazardManager hm;
 
     //[Header("Question Manager")]
     //[SerializeField] private QnManager qm;
@@ -42,6 +43,9 @@ public class PointerHazard : PointerHandler
 
     [Header("Optional: View through other objects")]
     public bool seeThrough = false;
+
+    // Translation offset of effect
+    [SerializeField] private Vector3 meshHoverTrans = Vector3.zero;
 
     // Scale offset of hover effect
     [SerializeField] private Vector3 meshHoverScale = Vector3.one;
@@ -109,6 +113,7 @@ public class PointerHazard : PointerHandler
             else
             { // Answer question
                 //qm.AnswerQuestion(areaName);
+                hm.FoundHazard(hazardDesc);
 
                 completed = true;
                 hintBlue = false;
@@ -203,11 +208,11 @@ public class PointerHazard : PointerHandler
                     Destroy(child.gameObject);
                 }
 
-                //obj.transform.localScale *= 1.001f;
                 obj.transform.rotation = obj.transform.parent.rotation;
-                //obj.transform.localScale = Vector3.one;
-                obj.transform.localPosition = Vector3.zero;
+
+                // Offset scale and position
                 obj.transform.localScale = meshHoverScale;
+                obj.transform.localPosition = meshHoverTrans;
 
                 newHighlightObjects.Add(obj);
                 obj.SetActive(false);
