@@ -9,7 +9,7 @@ public class PointerHazard : PointerHandler
     public string hazardDesc = "";
     public bool isHazard = false;
     public int severity = 1;
-    [SerializeField] private HazardManager hm;
+    private HazardManager hm;
 
     //[Header("Question Manager")]
     //[SerializeField] private QnManager qm;
@@ -56,6 +56,13 @@ public class PointerHazard : PointerHandler
         highlightDoneObjs = CreateHighlightMeshes(highlightDoneCol);
         highlightWrongObjs = CreateHighlightMeshes(highlightWrongCol);
         currentHighlights = highlightObjs;
+
+        hm = GameObject.FindObjectOfType<HazardManager>();
+
+        if (hm == null)
+		{
+            Debug.LogError("HazardManager not found by " + this.gameObject.name);
+		}
 
         // Initialize custom trigger events
         AddEventTriggerListener(

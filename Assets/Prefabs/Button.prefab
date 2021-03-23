@@ -157,6 +157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactable: 1
   interactableOnce: 0
+  hoverOnly: 0
   doOnHover:
     m_PersistentCalls:
       m_Calls: []
@@ -173,9 +174,10 @@ MonoBehaviour:
   nextButton: 0
   buttonObject: {fileID: 2994090935551340721}
   gm: {fileID: 0}
-  activCol: {r: 0.62352943, g: 0.62352943, b: 0.62352943, a: 1}
+  activCol: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
   deactivCol: {r: 0, g: 0, b: 0, a: 1}
-  clickCol: {r: 0.62352943, g: 0.62352943, b: 0.62352943, a: 1}
+  hoverCol: {r: 0, g: 1, b: 1, a: 1}
+  clickCol: {r: 0, g: 1, b: 0, a: 1}
   changeCol: 1
 --- !u!136 &2994090935131199211
 CapsuleCollider:

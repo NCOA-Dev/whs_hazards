@@ -14,7 +14,6 @@ public class UIPointerHandler : MonoBehaviour
     [Tooltip("Only allow hover events, not clicks.")]
     public bool noClick; 
     public bool interactableOnce;
-    public bool hasOutline;
     public bool changeColor = false;
     public Color origCol = Color.white;
     public Color hoverCol = Color.white;
@@ -39,13 +38,18 @@ public class UIPointerHandler : MonoBehaviour
     //[SerializeField] private GameObject dropSound = null;
 
     private bool startedInteractable = false;
+    private bool startedChangeCol = true;
     private bool hovering = false;
     private Image img;
 
     private void OnEnable()
 	{
         img = GetComponent<Image>();
-        origCol = img.color;
+		if (origCol == Color.white)
+		{
+            origCol = img.color;
+            startedChangeCol = changeColor;
+        }
 
         if (startedInteractable)
 		{
@@ -89,9 +93,10 @@ public class UIPointerHandler : MonoBehaviour
         {
             Player.Instance.StopHovering();
         }
-        if (img != null && origCol != null && changeColor)
+        if (img != null && origCol != null)
 		{
             img.color = origCol;
+            changeColor = startedChangeCol;
         }
     }
 
@@ -130,7 +135,7 @@ public class UIPointerHandler : MonoBehaviour
     {
         if (hovering)
         {
-            if (changeColor)
+            if (changeColor && interactable)
             {
                 img.color = origCol;
             }
@@ -198,6 +203,11 @@ public class UIPointerHandler : MonoBehaviour
 		{
             interactable = true;
         }
+
+        if (!hovering && changeColor)
+		{
+            img.color = origCol;
+		}
     }
 
     public void Click(BaseEventData data)

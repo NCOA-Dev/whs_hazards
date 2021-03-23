@@ -37,8 +37,7 @@ public class Clipboard : MonoBehaviour
             }
         }
 		else if (!lookedForLong)
-		{ 
-            // Rotate yaw of clipboard to player's yaw
+		{ // If the player isnt looking at the clipboard, rotate its yaw to player's yaw
             transform.eulerAngles = new Vector3(0, player.transform.eulerAngles.y, 0);
         }
 

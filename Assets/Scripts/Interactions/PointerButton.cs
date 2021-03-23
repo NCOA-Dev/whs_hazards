@@ -12,9 +12,10 @@ public class PointerButton : PointerHandler
     [Header("Button Settings")]
     [SerializeField] private GameObject buttonObject;
     [SerializeField] private GameManager gm;
-    public Color activCol = Color.white;
-    public Color deactivCol = Color.white;
-    public Color clickCol = Color.white;
+    [SerializeField] [ColorUsage(true, true)] private Color activCol = Color.grey;
+    [SerializeField] [ColorUsage(true, true)] private Color deactivCol = Color.black;
+    [SerializeField] [ColorUsage(true, true)] private Color hoverCol = Color.cyan;
+    [SerializeField] [ColorUsage(true, true)] private Color clickCol = Color.green;
     public bool changeCol;
 
     private Material btnMat;
@@ -26,13 +27,13 @@ public class PointerButton : PointerHandler
         if (buttonObject != null && buttonObject.GetComponent<Renderer>() != null)
 		{
             btnMat = buttonObject.GetComponent<Renderer>().material;
-            btnMat.color = activCol;
+            btnMat.SetColor("_EmissionColor", activCol);
         }
 
         if (!interactable)
 		{
-            btnMat.color = deactivCol;
-		}
+            btnMat.SetColor("_EmissionColor", deactivCol);
+        }
 
         anim = GetComponent<Animator>();
 
@@ -55,9 +56,9 @@ public class PointerButton : PointerHandler
     {
         base.OnHover(eventData);
 
-        if (interactable)
+        if (interactable && changeCol)
         {
-            
+            btnMat.SetColor("_EmissionColor", hoverCol);
         }
     }
 
@@ -67,7 +68,7 @@ public class PointerButton : PointerHandler
 
         if (interactable && changeCol)
         {
-            btnMat.color = activCol;
+            btnMat.SetColor("_EmissionColor", activCol);
         }
     }
 
@@ -87,7 +88,7 @@ public class PointerButton : PointerHandler
 
             if (changeCol)
             {
-                btnMat.color = clickCol;
+                btnMat.SetColor("_EmissionColor", clickCol);
             }
 
             if (interactableOnce)
