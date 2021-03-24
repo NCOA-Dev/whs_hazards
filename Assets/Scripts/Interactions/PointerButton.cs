@@ -8,6 +8,7 @@ public class PointerButton : PointerHandler
     [Header("Stage Settings")]
     public int level = 0;
     public bool nextButton = false;
+    public bool prevButton = false;
 
     [Header("Button Settings")]
     [SerializeField] private GameObject buttonObject;
@@ -80,6 +81,10 @@ public class PointerButton : PointerHandler
 			{
                 gm.NextButton();
             }
+            else if (prevButton)
+			{
+                gm.PrevButton();
+			}
             else
 			{
                 gm.PressButton(level);
@@ -87,8 +92,9 @@ public class PointerButton : PointerHandler
             anim.SetTrigger("press");
 
             if (changeCol)
-            {
-                btnMat.SetColor("_EmissionColor", clickCol);
+			{
+                btnMat.SetColor("_EmissionColor", hoverCol);
+                StartCoroutine(WaitThenSetColor(0.5f, activCol));
             }
 
             if (interactableOnce)
@@ -100,6 +106,45 @@ public class PointerButton : PointerHandler
 
         base.OnClick(eventData);
     }
+
+    public void Activate(bool activ)
+	{
+        if (activ)
+		{
+            btnMat.SetColor("_EmissionColor", activCol);
+        }
+        else
+		{
+            btnMat.SetColor("_EmissionColor", deactivCol);
+        }
+        interactable = activ;
+        changeCol = activ;
+    }
+
+    public void ClickCol(bool activ)
+    {
+        if (activ)
+        {
+            btnMat.SetColor("_EmissionColor", clickCol);
+        }
+        else
+        {
+            btnMat.SetColor("_EmissionColor", activCol);
+        }
+        changeCol = !activ;
+    }
+
+    // Wait then set color
+    private IEnumerator WaitThenSetColor(float time, Color col)
+	{
+        yield return new WaitForSeconds(time);
+
+        if (changeCol)
+		{
+            btnMat.SetColor("_EmissionColor", col);
+        }
+	}
+
 
     public new void Click(BaseEventData data)
     {

@@ -15,11 +15,14 @@ public class UIPointerHandler : MonoBehaviour
     public bool noClick; 
     public bool interactableOnce;
     public bool changeColor = false;
-    public Color origCol = Color.white;
+    private Color origCol = Color.white;
     public Color hoverCol = Color.white;
     public Color clickCol = Color.white;
     public Color activatedCol = Color.clear;
+    public Color activatedHoverCol = Color.clear;
+    public Color activatedClickCol = Color.clear;
     public Color hintCol = Color.clear;
+    private Color trueOrigCol;
 
     [Header("Events")]
     public UnityEvent doOnHover;
@@ -40,6 +43,7 @@ public class UIPointerHandler : MonoBehaviour
     private bool startedInteractable = false;
     private bool startedChangeCol = true;
     private bool hovering = false;
+    private bool activated = false;
     private Image img;
 
     private void OnEnable()
@@ -48,13 +52,14 @@ public class UIPointerHandler : MonoBehaviour
 		if (origCol == Color.white)
 		{
             origCol = img.color;
+
+            // Keep track of which values occurred at the first OnEnable
             startedChangeCol = changeColor;
+            trueOrigCol = origCol;
+            startedInteractable = interactable;
         }
 
-        if (startedInteractable)
-		{
-            interactable = true;
-		}
+        interactable = startedInteractable;
     }
 
     // Start is called before the first frame update
@@ -84,8 +89,6 @@ public class UIPointerHandler : MonoBehaviour
             GetComponent<EventTrigger>(),
             EventTriggerType.PointerClick,
             OnClick);
-
-        startedInteractable = interactable;
     }
     private void OnDisable()
     {
@@ -114,7 +117,11 @@ public class UIPointerHandler : MonoBehaviour
     {
         if (interactable)
         {
-            if (changeColor)
+            if (changeColor && activated)
+            {
+                img.color = activatedHoverCol;
+            }
+            else if (changeColor)
             {
                 img.color = hoverCol;
             }
@@ -167,7 +174,11 @@ public class UIPointerHandler : MonoBehaviour
         {
             doOnClick.Invoke();
 
-            if (changeColor)
+            if (changeColor && activated)
+            {
+                img.color = activatedClickCol;
+            }
+            else if (changeColor)
             {
                 img.color = clickCol;
             }
@@ -227,6 +238,21 @@ public class UIPointerHandler : MonoBehaviour
         }
         changeColor = !on;
         interactable = !on;
+    }
+
+    // Change to activate color without disabling
+    public void ActivateColor(bool on)
+    {
+        if (on && img != null)
+        {
+            origCol = activatedCol;
+        }
+        else if (img != null)
+        {
+            origCol = trueOrigCol;
+        }
+        img.color = origCol;
+        activated = on;
     }
 
     public void Hint(bool on)

@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private GameObject[] saveOnLoad;
 	[SerializeField] private TMP_Text stageText;
 	[SerializeField] private Animator elevatorAnim;
+	[SerializeField] private HazardManager hm;
+	[SerializeField] private PointerButton[] elevButtons;
 
 	private int currentLvl = 0;
 	private readonly int totalLevels = 3;
@@ -21,6 +23,11 @@ public class GameManager : MonoBehaviour
 		{
 			DontDestroyOnLoad(obj);
 		}
+	}
+
+	private void Start()
+	{
+		elevButtons[0].Activate(false);
 	}
 
 	private void Update()
@@ -42,6 +49,9 @@ public class GameManager : MonoBehaviour
 
 			loading = true;
 			currentLvl = level;
+
+			// Set click colour (only if confirmed click)
+			elevButtons[currentLvl].ClickCol(true);
 
 			if (elevatorAnim.GetBool("open"))
 			{ // If elevator open, wait for it to close
@@ -65,6 +75,27 @@ public class GameManager : MonoBehaviour
 			{
 				currentLvl = 1;
 			}
+			elevButtons[currentLvl].ClickCol(true);
+
+			if (elevatorAnim.GetBool("open"))
+			{ // If elevator open, wait for it to close
+				elevatorAnim.SetBool("open", false);
+				StartCoroutine(ElevatorLoad(currentLvl, 4f, NextLevel));
+			}
+			else
+			{ // If elevator already closed
+				StartCoroutine(ElevatorLoad(currentLvl, 3f, NextLevel));
+			}
+		}
+	}
+
+	public void PrevButton()
+	{
+		if (!loading && currentLvl != 0)
+		{
+			loading = true;
+			currentLvl--;
+			elevButtons[currentLvl].ClickCol(true);
 
 			if (elevatorAnim.GetBool("open"))
 			{ // If elevator open, wait for it to close
@@ -84,6 +115,15 @@ public class GameManager : MonoBehaviour
 		stageText.text = "Stage " + currentLvl;
 		elevatorAnim.SetBool("open", true);
 		loading = false;
+
+		// Disable pressed button and enable others
+		foreach (PointerButton btn in elevButtons)
+		{
+			btn.Activate(true);
+		}
+		elevButtons[currentLvl].Activate(false);
+
+		hm.StartRoom(currentLvl);
 	}
 
 	// Load next scene around set pauses and run the given method when done

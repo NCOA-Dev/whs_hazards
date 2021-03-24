@@ -238,12 +238,12 @@ MonoBehaviour:
   interactable: 1
   noClick: 0
   interactableOnce: 0
-  hasOutline: 0
   changeColor: 1
-  origCol: {r: 1, g: 1, b: 1, a: 1}
-  hoverCol: {r: 0.6792453, g: 0.6792453, b: 0.6792453, a: 1}
-  clickCol: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
-  activatedCol: {r: 0, g: 0, b: 0, a: 0}
+  hoverCol: {r: 0.8207547, g: 0.81756645, b: 0.7936543, a: 1}
+  clickCol: {r: 0.735849, g: 0.73336977, b: 0.7184941, a: 1}
+  activatedCol: {r: 1, g: 0.6631543, b: 0.6367924, a: 1}
+  activatedHoverCol: {r: 0.9056604, g: 0.59357595, b: 0.56817377, a: 1}
+  activatedClickCol: {r: 0.8113208, g: 0.5300819, b: 0.508989, a: 1}
   hintCol: {r: 0, g: 0, b: 0, a: 0}
   doOnHover:
     m_PersistentCalls:

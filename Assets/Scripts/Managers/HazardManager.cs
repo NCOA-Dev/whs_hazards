@@ -11,14 +11,20 @@ public class HazardManager : MonoBehaviour
     [SerializeField] private UIPointerHandler[] responseBoxes;
     private TMP_Text[] hazardTextBoxes;
 
-    [Header("Other UI")]
+    [Header("Major Panels")]
+    [SerializeField] private GameObject textPanel;
     [SerializeField] private GameObject riskPanel;
-    [SerializeField] private TMP_Text riskHazardText;
     [SerializeField] private GameObject responsePanel;
+    [SerializeField] private GameObject completionPanel;
+
+    [Header("Other UI")]
+    [SerializeField] private TMP_Text riskHazardText;
     [SerializeField] private TMP_Text responseHazardText;
     [SerializeField] private UIPointerHandler[] responseButtonsCont;
     [SerializeField] private UIPointerHandler[] responseButtonsRep;
     [SerializeField] private GameObject clickBlocker;
+    [SerializeField] private TMP_Text locationText;
+    [SerializeField] private GameObject dateText;
 
     [Header("Storage Room")]
     [SerializeField] private List<string> hazardDescsStorage;
@@ -28,8 +34,13 @@ public class HazardManager : MonoBehaviour
     private int[] riskAttemptsStorage;
     private Vector2[] responseAttemptsStorage;
 
+    // Current room tracking
     private int currentProgress = 0;
     private int selectedRow = 0;
+
+    [Header("Scene Tracking Variables")]
+    [Tooltip("Location name for the scene of equal array index to scene index. Menu scenes should be blank.")]
+    [SerializeField] private string[] locationNames;
 
     // Response tracking variables
     private bool selectedResCont = false;
@@ -37,15 +48,20 @@ public class HazardManager : MonoBehaviour
     private string contText = "";
     private string repText = "";
 
+    // Results {risk, res1, res2}
+    private bool[,] storageResults; 
+
     void Start()
     {
-
         // Clone storage hazard texts
         hazardDescsStorageCopy = new List<string>(hazardDescsStorage);
 
         // Instantiate attempt arrays
         riskAttemptsStorage = new int[riskAnswersStorage.Length];
         responseAttemptsStorage = new Vector2[responseAnswersStorage.Length];
+
+        // Instantiate results arrays
+        storageResults = new bool[riskAnswersStorage.Length, 3];
 
         // Fill attempt arrays with -1 to track if attempted
         for (int i = 0; i < riskAttemptsStorage.Length; i++)
@@ -54,6 +70,17 @@ public class HazardManager : MonoBehaviour
             responseAttemptsStorage[i].x = -1;
             responseAttemptsStorage[i].y = -1;
         }
+
+        StartRoom(0);
+    }
+
+    public void StartRoom(int sceneIndex)
+	{
+        // Set name of room
+        locationText.text = locationNames[sceneIndex];
+
+        // Date text visible on non-menu scenes
+        dateText.SetActive(sceneIndex > 0);
     }
 
     public void FoundHazard(string hazardDesc)
@@ -94,9 +121,15 @@ public class HazardManager : MonoBehaviour
 		}
 	}
 
-	#region risk
-	// Called when risk box is clicked
-	public void SelectRiskBox(int row)
+    // Called by Okay button on completion panel
+    public void SubmitCompletionPanel()
+    {
+        StartCoroutine(WaitThenActivate(0.2f, completionPanel, false));
+    }
+
+    #region risk
+    // Called when risk box is clicked
+    public void SelectRiskBox(int row)
 	{
         // Reveal risk panel
         StartCoroutine(WaitThenActivate(0.3f, riskPanel, true));
@@ -110,11 +143,11 @@ public class HazardManager : MonoBehaviour
 
     // Called when pressed risk button (0: low, 1: med, 2: high)
     public void SelectRisk(int severity)
-	{
+    {
         string riskText = "";
         Color riskCol = Color.black;
         switch (severity)
-		{
+        {
             case 0:
                 riskText = "Low";
                 riskCol = new Color(0.95f, 0.9f, 0f); // yellow
@@ -126,34 +159,37 @@ public class HazardManager : MonoBehaviour
             case 2:
                 riskText = "High";
                 riskCol = new Color(0.9f, 0f, 0f); // red
-                break;         
+                break;
         }
-
-        // If not being called by cancel button
-        if (severity != -1)
-		{
-            TMP_Text txt = riskBoxes[selectedRow].GetComponentInChildren<TMP_Text>();
-            if (txt != null)
-			{
-                txt.text = riskText;
-                txt.color = riskCol;
-            }
-            else
-			{
-                Debug.LogError("Text box not found on " + riskBoxes[selectedRow].name);
-			}
-		}
 
         // Record answer
         riskAttemptsStorage[IndexOf(selectedRow)] = severity;
 
-        if (severity != riskAnswersStorage[IndexOf(selectedRow)])
+        // Evaluate results
+        bool correct = severity == riskAnswersStorage[IndexOf(selectedRow)];
+        storageResults[IndexOf(selectedRow), 0] = correct; // Store result
+
+        // If not being called by cancel button, set text
+        if (severity != -1)
         {
-            Debug.LogWarning("incorrect severity");
+            TMP_Text txt = riskBoxes[selectedRow].GetComponentInChildren<TMP_Text>();
+            if (txt != null)
+            {
+                txt.text = riskText;
+                txt.color = riskCol;
+            }
+            else
+            {
+                Debug.LogError("Text box not found on " + riskBoxes[selectedRow].name);
+            }
+
+            // Only set color if not being called by cancel button
+            riskBoxes[selectedRow].ActivateColor(!correct); // Change color to red if incorrect
         }
 
         StartCoroutine(WaitThenActivate(0.2f, riskPanel, false));
-	}
+        CheckIfFinished();
+    }
     #endregion
 
     #region response
@@ -170,7 +206,7 @@ public class HazardManager : MonoBehaviour
         selectedRow = row;
     }
 
-    // Workaround for Unity Events only accepting one param
+    // Response select workaround for UnityEvents only accepting one parameter
     public void SelectResponse1(int response)
 	{
         SelectResponse(1, response);
@@ -188,7 +224,7 @@ public class HazardManager : MonoBehaviour
     private void SelectResponse(int section, int response)
     {
         switch (section)
-		{
+        {
             case -1: // Called by cancel button
                 CloseResponse();
                 EnableBtns(responseButtonsCont, -1);
@@ -199,28 +235,37 @@ public class HazardManager : MonoBehaviour
                 EnableBtns(responseButtonsCont, response);
                 TMP_Text contAnsText = responseButtonsCont[response].GetComponentInChildren<TMP_Text>();
                 contText = contAnsText.text;
-                
+
                 // Record answer
                 responseAttemptsStorage[IndexOf(selectedRow)].x = response;
 
                 if (response != responseAnswersStorage[IndexOf(selectedRow)].x)
-                {  // Incorrect- make text red
-                    contText = MakeTextRed(contText);
+                {  // Incorrect - make text red and store incorrect result
+                    contText = Redify(contText);
+                    storageResults[IndexOf(selectedRow), 1] = false;
                 }
-
+                else
+                { // Correct - store correct result
+                    storageResults[IndexOf(selectedRow), 1] = true;
+                }
                 break;
             case 2: // Reporting method section
                 selectedResRep = true;
                 EnableBtns(responseButtonsRep, response);
                 TMP_Text repAnsText = responseButtonsRep[response].GetComponentInChildren<TMP_Text>();
                 repText = repAnsText.text;
-                
+
                 // Record answer
                 responseAttemptsStorage[IndexOf(selectedRow)].y = response;
 
                 if (response != responseAnswersStorage[IndexOf(selectedRow)].y)
-                { // Incorrect - make text red
-                    repText = MakeTextRed(repText);
+                { // Incorrect - make text red and store incorrect result
+                    repText = Redify(repText);
+                    storageResults[IndexOf(selectedRow), 2] = false;
+                }
+                else
+                { // Correct - store correct result
+                    storageResults[IndexOf(selectedRow), 2] = true;
                 }
                 break;
             default:
@@ -230,7 +275,7 @@ public class HazardManager : MonoBehaviour
 
 
         if (selectedResCont && selectedResRep)
-		{
+        {
             TMP_Text txt = responseBoxes[selectedRow].GetComponentInChildren<TMP_Text>();
             if (txt != null)
             {
@@ -240,6 +285,11 @@ public class HazardManager : MonoBehaviour
             {
                 Debug.LogError("Text box not found on " + responseBoxes[selectedRow].name);
             }
+
+            // Change color to red if incorrect
+            bool correct = storageResults[IndexOf(selectedRow), 1] &&
+                           storageResults[IndexOf(selectedRow), 2];
+            responseBoxes[selectedRow].ActivateColor(!correct);
 
             CloseResponse();
         }
@@ -262,13 +312,22 @@ public class HazardManager : MonoBehaviour
         selectedResRep = false;
 
 		StartCoroutine(WaitThenActivate(0.4f, responsePanel, false));
-	}
-    #endregion
+        CheckIfFinished();
+    }
+	#endregion
 
-    // Called when an answer is submitted 
-    private void CheckIfFinished()
+	#region private
+	// Duplicate report info for each room
+    private void CreateReports()
 	{
-        bool finished = true;
+
+	}
+
+	// Called when an answer is submitted 
+	private void CheckIfFinished()
+	{
+        bool allAttempted = true;
+        bool allCorrect = true;
 
         for (int i = 0; i < riskAttemptsStorage.Length; i++)
 		{ // Check if any question is not yet attempted
@@ -276,16 +335,37 @@ public class HazardManager : MonoBehaviour
                 responseAttemptsStorage[i].x == -1 ||
                 responseAttemptsStorage[i].y == -1)
 			{
-                finished = false;
+                allAttempted = false;
+			}
+		}
+        
+        for (int i = 0; i < storageResults.GetLength(0); i++)
+        { // Check if all questions are correct
+            for (int j = 0; j < storageResults.GetLength(1); j++)
+			{
+                if (!storageResults[i, j])
+				{
+                    allCorrect = false;
+                }
 			}
 		}
 
-        if (finished)
+        if (allAttempted)
 		{
             // do something to finish 
-            Debug.LogWarning("All questions attempted.");
+            Debug.Log("All questions attempted.");
 		}
-	}
+
+        if (allCorrect)
+		{
+            Debug.LogWarning("All questions correct.");
+
+            // Reveal completion panel
+            StartCoroutine(WaitThenActivate(1f, completionPanel, true));
+            StartCoroutine(WaitThenActivate(1f, riskPanel, false));
+            StartCoroutine(WaitThenActivate(1f, responsePanel, false));
+        }
+    }
 
     // Return the description list index of a hazard text from the given row
     private int IndexOf(int row)
@@ -293,10 +373,11 @@ public class HazardManager : MonoBehaviour
         string text = hazardTextBoxes[row].text;
         return hazardDescsStorageCopy.IndexOf(text);
     }
-
-    private string MakeTextRed(string text)
+     
+    // Returns a given string, but made dark red with html/TMP tags
+    private string Redify(string text)
 	{
-        return "<color=\"red\">" + text + "</color>";
+        return "<color=#9D0000>" + text + "</color>";
 	}
 
     private IEnumerator WaitThenActivate(float secs, GameObject obj, bool activ)
@@ -306,11 +387,6 @@ public class HazardManager : MonoBehaviour
         yield return new WaitForSeconds(secs);
         obj.SetActive(activ);
         clickBlocker.SetActive(false);
-
-        // If being deactivated, check if finished
-        if (!activ)
-		{
-            CheckIfFinished();
-        }
 	}
+	#endregion
 }
