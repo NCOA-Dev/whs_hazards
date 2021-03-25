@@ -56,10 +56,14 @@ public class UIPointerHandler : MonoBehaviour
             // Keep track of which values occurred at the first OnEnable
             startedChangeCol = changeColor;
             trueOrigCol = origCol;
+
             startedInteractable = interactable;
         }
 
-        interactable = startedInteractable;
+        if (startedInteractable)
+		{
+            interactable = true;
+        }
     }
 
     // Start is called before the first frame update

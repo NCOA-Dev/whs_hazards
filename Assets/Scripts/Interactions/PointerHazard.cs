@@ -7,7 +7,6 @@ public class PointerHazard : PointerHandler
 {
     [Header("Hazard Settings")]
     public string hazardDesc = "";
-    public bool isHazard = false;
     public int severity = 1;
     private HazardManager hm;
 

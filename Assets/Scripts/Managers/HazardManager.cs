@@ -5,14 +5,8 @@ using TMPro;
 
 public class HazardManager : MonoBehaviour
 {
-    [Header("Text Boxes")]
-    [SerializeField] private GameObject[] hazardTexts;
-    [SerializeField] private UIPointerHandler[] riskBoxes;
-    [SerializeField] private UIPointerHandler[] responseBoxes;
-    private TMP_Text[] hazardTextBoxes;
-
     [Header("Major Panels")]
-    [SerializeField] private GameObject textPanel;
+    [SerializeField] private TextPanel textPanel;
     [SerializeField] private GameObject riskPanel;
     [SerializeField] private GameObject responsePanel;
     [SerializeField] private GameObject completionPanel;
@@ -30,13 +24,11 @@ public class HazardManager : MonoBehaviour
     [SerializeField] private List<string> hazardDescsStorage;
     [SerializeField] private int[] riskAnswersStorage;
     [SerializeField] private Vector2[] responseAnswersStorage;
-    private List<string> hazardDescsStorageCopy;
-    private int[] riskAttemptsStorage;
-    private Vector2[] responseAttemptsStorage;
 
-    // Current room tracking
-    private int currentProgress = 0;
-    private int selectedRow = 0;
+    [Header("Office")]
+    [SerializeField] private List<string> hazardDescsOffice;
+    [SerializeField] private int[] riskAnswersOffice;
+    [SerializeField] private Vector2[] responseAnswersOffice;
 
     [Header("Scene Tracking Variables")]
     [Tooltip("Location name for the scene of equal array index to scene index. Menu scenes should be blank.")]
@@ -48,34 +40,88 @@ public class HazardManager : MonoBehaviour
     private string contText = "";
     private string repText = "";
 
-    // Results {risk, res1, res2}
-    private bool[,] storageResults; 
+    // Room state tracking
+    private int currentRoom = 0;
+    private int[] roomProgress;
+    private readonly int totalRooms = 2;
+    private int selectedRow = 0;
+
+    // Room combination variables
+    private List<TextPanel> allTextPanels;
+    private List<string>[] allHazardDescs;
+    private int[][] allRiskAnswers;
+    private Vector2[][] allResponseAnswers;
+    private int[][] allRiskAttempts;
+    private Vector2[][] allResponseAttempts;
+    private bool[][,] allResults;
 
     void Start()
     {
-        // Clone storage hazard texts
-        hazardDescsStorageCopy = new List<string>(hazardDescsStorage);
+        // Clone hazard texts
+        allHazardDescs = new List<string>[totalRooms];
+        allHazardDescs[0] = new List<string>(hazardDescsStorage);
+        allHazardDescs[1] = new List<string>(hazardDescsOffice);
 
         // Instantiate attempt arrays
-        riskAttemptsStorage = new int[riskAnswersStorage.Length];
-        responseAttemptsStorage = new Vector2[responseAnswersStorage.Length];
+        allRiskAttempts = new int[totalRooms][];
+        allResponseAttempts = new Vector2[totalRooms][];
+        allRiskAttempts[0] = new int[riskAnswersStorage.Length];
+        allResponseAttempts[0] = new Vector2[responseAnswersStorage.Length];
+        allRiskAttempts[1] = new int[riskAnswersOffice.Length];
+        allResponseAttempts[1] = new Vector2[responseAnswersOffice.Length];
+
+        // Instantiate answer arrays
+        allRiskAnswers = new int[totalRooms][];
+        allResponseAnswers = new Vector2[totalRooms][];
+        allRiskAnswers[0] = riskAnswersStorage;
+        allRiskAnswers[1] = riskAnswersOffice;
+        allResponseAnswers[0] = responseAnswersStorage;
+        allResponseAnswers[1] = responseAnswersOffice;
 
         // Instantiate results arrays
-        storageResults = new bool[riskAnswersStorage.Length, 3];
+        allResults = new bool[totalRooms][,];
+        allResults[0] = new bool[riskAnswersStorage.Length, 3];
+        allResults[1] = new bool[riskAnswersStorage.Length, 3];
+
+        roomProgress = new int[totalRooms];
 
         // Fill attempt arrays with -1 to track if attempted
-        for (int i = 0; i < riskAttemptsStorage.Length; i++)
+        for (int i = 0; i < allRiskAttempts.Length; i++)
 		{
-            riskAttemptsStorage[i] = -1;
-            responseAttemptsStorage[i].x = -1;
-            responseAttemptsStorage[i].y = -1;
+            for (int j = 0; j < allRiskAttempts[i].Length; j++)
+			{
+                allRiskAttempts[i][j] = -1;
+                allResponseAttempts[i][j].x = -1;
+                allResponseAttempts[i][j].y = -1;
+            }
         }
+
+        // Create reports with total rooms
+        CreateReports(totalRooms);
 
         StartRoom(0);
     }
 
     public void StartRoom(int sceneIndex)
 	{
+        currentRoom = sceneIndex - 1;
+
+        // Deactivate all popup panels
+        riskPanel.SetActive(false);
+        responsePanel.SetActive(false);
+        completionPanel.SetActive(false);
+        CloseResponse();
+        EnableBtns(responseButtonsCont, -1);
+        EnableBtns(responseButtonsRep, -1);
+
+        // Deactivate other text panels and enable current level panel
+        foreach (TextPanel tp in allTextPanels)
+		{
+			tp.SetActive(false);
+		}
+		allTextPanels[sceneIndex].SetActive(true);
+        textPanel = allTextPanels[sceneIndex];
+
         // Set name of room
         locationText.text = locationNames[sceneIndex];
 
@@ -85,35 +131,35 @@ public class HazardManager : MonoBehaviour
 
     public void FoundHazard(string hazardDesc)
 	{
-        // Create list if not already created
-        if (hazardTextBoxes == null || hazardTextBoxes.Length == 0)
-		{ 
-            // Get all texts from the hazard text list
-            hazardTextBoxes = new TMP_Text[hazardTexts.Length];
-            for (int i = 0; i < hazardTexts.Length; i++)
-            {
-                TMP_Text text = hazardTexts[i].GetComponentInChildren<TMP_Text>();
-                if (text != null)
-                {
-                    hazardTextBoxes[i] = text;
-                }
-            }
-        }
-
-        if (hazardDescsStorage.Contains(hazardDesc))
+        if (currentRoom == 0 && hazardDescsStorage.Contains(hazardDesc))
 		{
             // Remove the text to prevent repetitions
             hazardDescsStorage.Remove(hazardDesc);
 
             // Add the text to the clipboard
-            hazardTextBoxes[currentProgress].text = hazardDesc;
+            textPanel.hazardTextBoxes[roomProgress[currentRoom]].text = hazardDesc;
 
             // Activate input boxes
-            riskBoxes[currentProgress].interactable = true;
-            responseBoxes[currentProgress].interactable = true;
+            textPanel.riskBoxes[roomProgress[currentRoom]].interactable = true;
+            textPanel.responseBoxes[roomProgress[currentRoom]].interactable = true;
 
             // Increment progress
-            currentProgress++;
+            roomProgress[currentRoom]++;
+        }
+        else if (currentRoom == 1 && hazardDescsOffice.Contains(hazardDesc))
+		{
+            // Remove the text to prevent repetitions
+            hazardDescsOffice.Remove(hazardDesc);
+
+            // Add the text to the clipboard
+            textPanel.hazardTextBoxes[roomProgress[currentRoom]].text = hazardDesc;
+
+            // Activate input boxes
+            textPanel.riskBoxes[roomProgress[currentRoom]].interactable = true;
+            textPanel.responseBoxes[roomProgress[currentRoom]].interactable = true;
+
+            // Increment progress
+            roomProgress[currentRoom]++;
         }
         else
 		{
@@ -134,7 +180,7 @@ public class HazardManager : MonoBehaviour
         // Reveal risk panel
         StartCoroutine(WaitThenActivate(0.3f, riskPanel, true));
 
-        string rowText = hazardTextBoxes[row].text;
+        string rowText = textPanel.hazardTextBoxes[row].text;
         riskHazardText.text = rowText;
 
         // Keep track of which row was clicked on
@@ -163,16 +209,16 @@ public class HazardManager : MonoBehaviour
         }
 
         // Record answer
-        riskAttemptsStorage[IndexOf(selectedRow)] = severity;
+        allRiskAttempts[currentRoom][IndexOf(selectedRow)] = severity;
 
         // Evaluate results
-        bool correct = severity == riskAnswersStorage[IndexOf(selectedRow)];
-        storageResults[IndexOf(selectedRow), 0] = correct; // Store result
+        bool correct = severity == allRiskAnswers[currentRoom][IndexOf(selectedRow)];
+        allResults[currentRoom][IndexOf(selectedRow), 0] = correct; // Store result
 
         // If not being called by cancel button, set text
         if (severity != -1)
         {
-            TMP_Text txt = riskBoxes[selectedRow].GetComponentInChildren<TMP_Text>();
+            TMP_Text txt = textPanel.riskBoxes[selectedRow].GetComponentInChildren<TMP_Text>();
             if (txt != null)
             {
                 txt.text = riskText;
@@ -180,11 +226,11 @@ public class HazardManager : MonoBehaviour
             }
             else
             {
-                Debug.LogError("Text box not found on " + riskBoxes[selectedRow].name);
+                Debug.LogError("Text box not found on " + textPanel.riskBoxes[selectedRow].name);
             }
 
             // Only set color if not being called by cancel button
-            riskBoxes[selectedRow].ActivateColor(!correct); // Change color to red if incorrect
+            textPanel.riskBoxes[selectedRow].ActivateColor(!correct); // Change color to red if incorrect
         }
 
         StartCoroutine(WaitThenActivate(0.2f, riskPanel, false));
@@ -199,7 +245,7 @@ public class HazardManager : MonoBehaviour
         // Reveal risk panel
         StartCoroutine(WaitThenActivate(0.3f, responsePanel, true));
 
-        string rowText = hazardTextBoxes[row].text;
+        string rowText = textPanel.hazardTextBoxes[row].text;
         responseHazardText.text = rowText;
 
         // Keep track of which row was clicked on
@@ -237,16 +283,16 @@ public class HazardManager : MonoBehaviour
                 contText = contAnsText.text;
 
                 // Record answer
-                responseAttemptsStorage[IndexOf(selectedRow)].x = response;
+                allResponseAttempts[currentRoom][IndexOf(selectedRow)].x = response;
 
-                if (response != responseAnswersStorage[IndexOf(selectedRow)].x)
+                if (response != allResponseAnswers[currentRoom][IndexOf(selectedRow)].x)
                 {  // Incorrect - make text red and store incorrect result
                     contText = Redify(contText);
-                    storageResults[IndexOf(selectedRow), 1] = false;
+                    allResults[currentRoom][IndexOf(selectedRow), 1] = false;
                 }
                 else
                 { // Correct - store correct result
-                    storageResults[IndexOf(selectedRow), 1] = true;
+                    allResults[currentRoom][IndexOf(selectedRow), 1] = true;
                 }
                 break;
             case 2: // Reporting method section
@@ -256,16 +302,16 @@ public class HazardManager : MonoBehaviour
                 repText = repAnsText.text;
 
                 // Record answer
-                responseAttemptsStorage[IndexOf(selectedRow)].y = response;
+                allResponseAttempts[currentRoom][IndexOf(selectedRow)].y = response;
 
-                if (response != responseAnswersStorage[IndexOf(selectedRow)].y)
+                if (response != allResponseAnswers[currentRoom][IndexOf(selectedRow)].y)
                 { // Incorrect - make text red and store incorrect result
                     repText = Redify(repText);
-                    storageResults[IndexOf(selectedRow), 2] = false;
+                    allResults[currentRoom][IndexOf(selectedRow), 2] = false;
                 }
                 else
                 { // Correct - store correct result
-                    storageResults[IndexOf(selectedRow), 2] = true;
+                    allResults[currentRoom][IndexOf(selectedRow), 2] = true;
                 }
                 break;
             default:
@@ -276,22 +322,23 @@ public class HazardManager : MonoBehaviour
 
         if (selectedResCont && selectedResRep)
         {
-            TMP_Text txt = responseBoxes[selectedRow].GetComponentInChildren<TMP_Text>();
+            TMP_Text txt = textPanel.responseBoxes[selectedRow].GetComponentInChildren<TMP_Text>();
             if (txt != null)
             {
                 txt.text = string.Format("• {0} \n• {1}", contText, repText);
             }
             else
             {
-                Debug.LogError("Text box not found on " + responseBoxes[selectedRow].name);
+                Debug.LogError("Text box not found on " + textPanel.responseBoxes[selectedRow].name);
             }
 
             // Change color to red if incorrect
-            bool correct = storageResults[IndexOf(selectedRow), 1] &&
-                           storageResults[IndexOf(selectedRow), 2];
-            responseBoxes[selectedRow].ActivateColor(!correct);
+            bool correct = allResults[currentRoom][IndexOf(selectedRow), 1] &&
+                           allResults[currentRoom][IndexOf(selectedRow), 2];
+            textPanel.responseBoxes[selectedRow].ActivateColor(!correct);
 
             CloseResponse();
+            CheckIfFinished();
         }
     }
 
@@ -312,16 +359,23 @@ public class HazardManager : MonoBehaviour
         selectedResRep = false;
 
 		StartCoroutine(WaitThenActivate(0.4f, responsePanel, false));
-        CheckIfFinished();
     }
 	#endregion
 
 	#region private
 	// Duplicate report info for each room
-    private void CreateReports()
+    private void CreateReports(int rooms)
 	{
-
-	}
+        allTextPanels = new List<TextPanel>();
+        allTextPanels.Add(textPanel);
+        for (int i = 0; i < rooms; i++)
+		{
+            GameObject tp = Instantiate(textPanel.gameObject, textPanel.transform.parent);
+            tp.transform.SetSiblingIndex(i);
+            tp.SetActive(false);
+            allTextPanels.Add(tp.GetComponent<TextPanel>());
+        }
+    }
 
 	// Called when an answer is submitted 
 	private void CheckIfFinished()
@@ -329,21 +383,21 @@ public class HazardManager : MonoBehaviour
         bool allAttempted = true;
         bool allCorrect = true;
 
-        for (int i = 0; i < riskAttemptsStorage.Length; i++)
+        for (int i = 0; i < allRiskAttempts[currentRoom].Length; i++)
 		{ // Check if any question is not yet attempted
-            if (riskAttemptsStorage[i] == -1 ||
-                responseAttemptsStorage[i].x == -1 ||
-                responseAttemptsStorage[i].y == -1)
+            if (allRiskAttempts[currentRoom][i] == -1 ||
+                allResponseAttempts[currentRoom][i].x == -1 ||
+                allResponseAttempts[currentRoom][i].y == -1)
 			{
                 allAttempted = false;
 			}
 		}
         
-        for (int i = 0; i < storageResults.GetLength(0); i++)
+        for (int i = 0; i < allResults[currentRoom].GetLength(0); i++)
         { // Check if all questions are correct
-            for (int j = 0; j < storageResults.GetLength(1); j++)
+            for (int j = 0; j < allResults[currentRoom].GetLength(1); j++)
 			{
-                if (!storageResults[i, j])
+                if (!allResults[currentRoom][i, j])
 				{
                     allCorrect = false;
                 }
@@ -362,16 +416,17 @@ public class HazardManager : MonoBehaviour
 
             // Reveal completion panel
             StartCoroutine(WaitThenActivate(1f, completionPanel, true));
-            StartCoroutine(WaitThenActivate(1f, riskPanel, false));
-            StartCoroutine(WaitThenActivate(1f, responsePanel, false));
+            StartCoroutine(WaitThenActivate(1.2f, riskPanel, false));
+            StartCoroutine(WaitThenActivate(1.2f, responsePanel, false));
         }
     }
 
     // Return the description list index of a hazard text from the given row
     private int IndexOf(int row)
 	{
-        string text = hazardTextBoxes[row].text;
-        return hazardDescsStorageCopy.IndexOf(text);
+        string text = textPanel.hazardTextBoxes[row].text;
+        return allHazardDescs[currentRoom].IndexOf(text);
+        //return hazardDescsStorageCopy.IndexOf(text);
     }
      
     // Returns a given string, but made dark red with html/TMP tags
