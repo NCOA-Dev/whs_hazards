@@ -269,11 +269,13 @@ MonoBehaviour:
   interactable: 1
   noClick: 0
   interactableOnce: 0
-  hasOutline: 0
   changeColor: 1
-  origCol: {r: 1, g: 1, b: 1, a: 1}
   hoverCol: {r: 0.6509434, g: 0.6509434, b: 0.6509434, a: 1}
   clickCol: {r: 0.38679248, g: 0.38679248, b: 0.38679248, a: 1}
+  activatedCol: {r: 0, g: 0, b: 0, a: 0}
+  activatedHoverCol: {r: 0, g: 0, b: 0, a: 0}
+  activatedClickCol: {r: 0, g: 0, b: 0, a: 0}
+  hintCol: {r: 0, g: 0, b: 0, a: 0}
   doOnHover:
     m_PersistentCalls:
       m_Calls: []
@@ -305,12 +307,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  downSound: {fileID: 0}
-  upSound: {fileID: 0}
-  clickSound: {fileID: 0}
-  errorSound: {fileID: 0}
-  dragSound: {fileID: 0}
-  dropSound: {fileID: 0}
+  speedMultiplier: 1
 --- !u!114 &1778113459185389990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -703,7 +700,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 1.6}
+  m_AnchoredPosition: {x: 0, y: 1.6000061}
   m_SizeDelta: {x: 522, y: 294}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &1778113460341970827

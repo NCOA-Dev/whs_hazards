@@ -30,6 +30,11 @@ public class HazardManager : MonoBehaviour
     [SerializeField] private int[] riskAnswersOffice;
     [SerializeField] private Vector2[] responseAnswersOffice;
 
+    [Header("Reception")]
+    [SerializeField] private List<string> hazardDescsReception;
+    [SerializeField] private int[] riskAnswersReception;
+    [SerializeField] private Vector2[] responseAnswersReception;
+
     [Header("Scene Tracking Variables")]
     [Tooltip("Location name for the scene of equal array index to scene index. Menu scenes should be blank.")]
     [SerializeField] private string[] locationNames;
@@ -43,7 +48,7 @@ public class HazardManager : MonoBehaviour
     // Room state tracking
     private int currentRoom = 0;
     private int[] roomProgress;
-    private readonly int totalRooms = 2;
+    private readonly int totalRooms = 3;
     private int selectedRow = 0;
 
     // Room combination variables
@@ -61,6 +66,7 @@ public class HazardManager : MonoBehaviour
         allHazardDescs = new List<string>[totalRooms];
         allHazardDescs[0] = new List<string>(hazardDescsStorage);
         allHazardDescs[1] = new List<string>(hazardDescsOffice);
+        allHazardDescs[2] = new List<string>(hazardDescsReception);
 
         // Instantiate attempt arrays
         allRiskAttempts = new int[totalRooms][];
@@ -69,19 +75,24 @@ public class HazardManager : MonoBehaviour
         allResponseAttempts[0] = new Vector2[responseAnswersStorage.Length];
         allRiskAttempts[1] = new int[riskAnswersOffice.Length];
         allResponseAttempts[1] = new Vector2[responseAnswersOffice.Length];
+        allRiskAttempts[2] = new int[riskAnswersReception.Length];
+        allResponseAttempts[2] = new Vector2[responseAnswersReception.Length];
 
         // Instantiate answer arrays
         allRiskAnswers = new int[totalRooms][];
         allResponseAnswers = new Vector2[totalRooms][];
         allRiskAnswers[0] = riskAnswersStorage;
-        allRiskAnswers[1] = riskAnswersOffice;
         allResponseAnswers[0] = responseAnswersStorage;
+        allRiskAnswers[1] = riskAnswersOffice;
         allResponseAnswers[1] = responseAnswersOffice;
+        allRiskAnswers[2] = riskAnswersReception;
+        allResponseAnswers[2] = responseAnswersReception;
 
         // Instantiate results arrays
         allResults = new bool[totalRooms][,];
         allResults[0] = new bool[riskAnswersStorage.Length, 3];
-        allResults[1] = new bool[riskAnswersStorage.Length, 3];
+        allResults[1] = new bool[riskAnswersOffice.Length, 3];
+        allResults[2] = new bool[riskAnswersReception.Length, 3];
 
         roomProgress = new int[totalRooms];
 
@@ -107,6 +118,7 @@ public class HazardManager : MonoBehaviour
         currentRoom = sceneIndex - 1;
 
         // Deactivate all popup panels
+        StopAllCoroutines();
         riskPanel.SetActive(false);
         responsePanel.SetActive(false);
         completionPanel.SetActive(false);
@@ -129,41 +141,29 @@ public class HazardManager : MonoBehaviour
         dateText.SetActive(sceneIndex > 0);
     }
 
+    // Called when a hazard is found
     public void FoundHazard(string hazardDesc)
 	{
-        if (currentRoom == 0 && hazardDescsStorage.Contains(hazardDesc))
+		// Remove the found hazard from the list to ensure its tracked and only found once
+		List<string> currentDescs = new List<string>(allHazardDescs[currentRoom]);
+		if (currentDescs.Contains(hazardDesc))
 		{
-            // Remove the text to prevent repetitions
-            hazardDescsStorage.Remove(hazardDesc);
+			// Remove the text to prevent repetitions
+			currentDescs.Remove(hazardDesc);
 
-            // Add the text to the clipboard
-            textPanel.hazardTextBoxes[roomProgress[currentRoom]].text = hazardDesc;
+			// Add the text to the clipboard
+			textPanel.hazardTextBoxes[roomProgress[currentRoom]].text = hazardDesc;
 
-            // Activate input boxes
-            textPanel.riskBoxes[roomProgress[currentRoom]].interactable = true;
-            textPanel.responseBoxes[roomProgress[currentRoom]].interactable = true;
+			// Activate input boxes
+			textPanel.riskBoxes[roomProgress[currentRoom]].interactable = true;
+			textPanel.responseBoxes[roomProgress[currentRoom]].interactable = true;
 
-            // Increment progress
-            roomProgress[currentRoom]++;
-        }
-        else if (currentRoom == 1 && hazardDescsOffice.Contains(hazardDesc))
+			// Increment progress
+			roomProgress[currentRoom]++;
+		}
+		else
 		{
-            // Remove the text to prevent repetitions
-            hazardDescsOffice.Remove(hazardDesc);
-
-            // Add the text to the clipboard
-            textPanel.hazardTextBoxes[roomProgress[currentRoom]].text = hazardDesc;
-
-            // Activate input boxes
-            textPanel.riskBoxes[roomProgress[currentRoom]].interactable = true;
-            textPanel.responseBoxes[roomProgress[currentRoom]].interactable = true;
-
-            // Increment progress
-            roomProgress[currentRoom]++;
-        }
-        else
-		{
-            Debug.LogWarning(hazardDesc + " not found or already added.");
+			Debug.LogWarning(hazardDesc + " not found or already added.");
 		}
 	}
 
@@ -435,6 +435,7 @@ public class HazardManager : MonoBehaviour
         return "<color=#9D0000>" + text + "</color>";
 	}
 
+    // Wait then activate or deactivate a given object - block clicks during this wait period
     private IEnumerator WaitThenActivate(float secs, GameObject obj, bool activ)
 	{
         // Block clicks during wait time

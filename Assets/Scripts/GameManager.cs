@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private HazardManager hm;
 	[SerializeField] private PointerButton[] elevButtons;
 
+	[Header("Hazard Objects")]
+	[SerializeField] private GameObject[] hazards;
+
 	private int currentLvl = 0;
 	private readonly int totalLevels = 3;
 	private bool loading = false;
@@ -27,6 +30,11 @@ public class GameManager : MonoBehaviour
 
 	private void Start()
 	{
+		foreach (GameObject hazard in hazards)
+		{
+			hazard.SetActive(false);
+		}
+
 		elevButtons[0].Activate(false);
 	}
 
@@ -67,14 +75,10 @@ public class GameManager : MonoBehaviour
 
 	public void NextButton()
 	{
-		if (!loading)
+		if (!loading && currentLvl < totalLevels)
 		{
 			loading = true;
 			currentLvl++;
-			if (currentLvl > totalLevels)
-			{
-				currentLvl = 1;
-			}
 			elevButtons[currentLvl].ClickCol(true);
 
 			if (elevatorAnim.GetBool("open"))
@@ -112,9 +116,18 @@ public class GameManager : MonoBehaviour
 	// Setup the next level
 	private void NextLevel()
 	{
-		stageText.text = "Stage " + currentLvl;
+		stageText.text = "Floor " + currentLvl;
 		elevatorAnim.SetBool("open", true);
 		loading = false;
+
+		foreach (GameObject hazard in hazards)
+		{
+			hazard.SetActive(false);
+		}
+		if (currentLvl >= 1)
+		{
+			hazards[currentLvl - 1].SetActive(true);
+		}
 
 		// Disable pressed button and enable others
 		foreach (PointerButton btn in elevButtons)

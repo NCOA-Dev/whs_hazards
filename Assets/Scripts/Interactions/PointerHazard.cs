@@ -7,16 +7,16 @@ public class PointerHazard : PointerHandler
 {
     [Header("Hazard Settings")]
     public string hazardDesc = "";
-    public int severity = 1;
     private HazardManager hm;
 
     //[Header("Question Manager")]
     //[SerializeField] private QnManager qm;
 
     // Highlight emission colours to swap between
-    [SerializeField] [ColorUsage(true, true)] private Color highlightCol = Color.white;
-    [SerializeField] [ColorUsage(true, true)] private Color highlightDoneCol = Color.white;
-    [SerializeField] [ColorUsage(true, true)] private Color highlightWrongCol = Color.white;
+    [ColorUsage(true, true)] private Color highlightCol = new Color(0.6f, 0.5f, 0f, 1f);
+    [ColorUsage(true, true)] private Color highlightDoneCol = new Color(0f, 0.745f, 0f, 1f);
+    [ColorUsage(true, true)] private Color highlightWrongCol = new Color(0.745f, 0f, 0f, 1f);
+    private bool WebGLCols = true;
 
     // Highlighters objects to create
     private List<GameObject> highlightObjs = new List<GameObject>();
@@ -48,9 +48,17 @@ public class PointerHazard : PointerHandler
 
     // Scale offset of hover effect
     [SerializeField] private Vector3 meshHoverScale = Vector3.one;
+    [SerializeField] private MeshRenderer ignoreOffsetMesh;
 
     public virtual void Start()
     {
+        if (WebGLCols)
+		{
+            highlightCol = new Color(0.9f, 0.85f, 0.3f, 1f);
+            highlightDoneCol = new Color(0.4f, 0.9f, 0.2f, 1f);
+            highlightWrongCol = new Color(0.9f, 0.2f, 0.2f, 1f);
+        }
+
         highlightObjs = CreateHighlightMeshes(highlightCol);
         highlightDoneObjs = CreateHighlightMeshes(highlightDoneCol);
         highlightWrongObjs = CreateHighlightMeshes(highlightWrongCol);
@@ -181,6 +189,8 @@ public class PointerHazard : PointerHandler
             {
                 GameObject obj;
                 obj = Instantiate(rend.gameObject, rend.transform);
+                DestroyImmediate(obj.GetComponent<MeshRenderer>());
+                obj.AddComponent<MeshRenderer>();
 
                 // Create a new material
 				Material mat = new Material(Shader.Find("Standard"));
@@ -206,8 +216,6 @@ public class PointerHazard : PointerHandler
                 //mat.shader = Shader.Find(mat.shader.name);
                 mat.EnableKeyword("_EMISSION");
 
-                obj.GetComponent<Renderer>().material = mat;
-
                 // Remove new object's children
                 foreach (Transform child in obj.transform)
                 {
@@ -216,9 +224,20 @@ public class PointerHazard : PointerHandler
 
                 obj.transform.rotation = obj.transform.parent.rotation;
 
+                obj.GetComponent<Renderer>().material = mat;
+
                 // Offset scale and position
                 obj.transform.localScale = meshHoverScale;
                 obj.transform.localPosition = meshHoverTrans;
+
+                if (ignoreOffsetMesh != null)
+                {
+                    if (rend == ignoreOffsetMesh)
+					{
+                        obj.transform.localScale = Vector3.one;
+                        obj.transform.localPosition = Vector3.zero;
+                    }
+                }
 
                 newHighlightObjects.Add(obj);
                 obj.SetActive(false);

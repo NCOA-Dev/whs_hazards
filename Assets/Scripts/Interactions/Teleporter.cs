@@ -44,7 +44,7 @@ public class Teleporter : PointerHandler
 
 		if (changeColor)
 		{
-			objMat.SetColor("_TintColor", hoverCol);
+			objMat.SetColor("_EmissionColor", hoverCol);
 		}
 
 		interactable = true;
@@ -56,7 +56,7 @@ public class Teleporter : PointerHandler
 
 		if (changeColor)
 		{
-			objMat.SetColor("_TintColor", origCol);
+			objMat.SetColor("_EmissionColor", origCol);
 		}
 	}
 
@@ -65,7 +65,7 @@ public class Teleporter : PointerHandler
     {
 		if (changeColor)
 		{
-			objMat.SetColor("_TintColor", origCol);
+			objMat.SetColor("_EmissionColor", origCol);
 		}
 
 		if (transform.CompareTag("Teleporter"))
