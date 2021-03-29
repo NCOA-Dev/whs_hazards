@@ -9,7 +9,12 @@ ModelImporter:
   - first:
       43: 4300002
     second: cardboardBox_03
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: No Name
+    second: {fileID: 2100000, guid: 0540bd3b1428e5347af54ce304a6a2de, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -51,7 +56,7 @@ ModelImporter:
     importLights: 0
     fileIdsGeneration: 1
     swapUVChannels: 0
-    generateSecondaryUV: 0
+    generateSecondaryUV: 1
     useFileUnits: 1
     keepQuads: 0
     weldVertices: 1

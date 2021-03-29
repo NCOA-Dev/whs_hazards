@@ -12,13 +12,18 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private Animator elevatorAnim;
 	[SerializeField] private HazardManager hm;
 	[SerializeField] private PointerButton[] elevButtons;
+	[SerializeField] private GameObject teleportBlocker;
+	[SerializeField] private GameObject upArrow;
+	[SerializeField] private GameObject downArrow;
 
 	[Header("Hazard Objects")]
 	[SerializeField] private GameObject[] hazards;
 
 	private int currentLvl = 0;
+	private int prevLevel = 0;
 	private readonly int totalLevels = 3;
 	private bool loading = false;
+	private int floorsToNextLevel = 0;
 
 	private void Awake()
 	{
@@ -50,16 +55,10 @@ public class GameManager : MonoBehaviour
 
 	public void PressButton(int level)
 	{
-		if (!loading && currentLvl != level)
+		if (!loading && prevLevel != level)
 		{
-			// Elevator goes up if new level is higher than previous and vice versa
-			elevatorAnim.SetBool("up", level > currentLvl);
-
-			loading = true;
+			floorsToNextLevel = Mathf.Abs(currentLvl - level);
 			currentLvl = level;
-
-			// Set click colour (only if confirmed click)
-			elevButtons[currentLvl].ClickCol(true);
 
 			if (elevatorAnim.GetBool("open"))
 			{ // If elevator open, wait for it to close
@@ -71,45 +70,62 @@ public class GameManager : MonoBehaviour
 				StartCoroutine(ElevatorLoad(currentLvl, 6f, NextLevel));
 			}
 		}
+		else if (prevLevel != level)
+		{ // Change elevator direction
+			elevatorAnim.SetBool("open", false);
+
+			// Elevator goes up if new level is higher than previous and vice versa
+			elevatorAnim.SetBool("up", level > prevLevel);
+			
+			currentLvl = level;
+			StopAllCoroutines();
+			StartCoroutine(ElevatorLoad(currentLvl, 6f, NextLevel));
+		}
+		else
+		{ // Already on the right floor
+			StopAllCoroutines();
+			currentLvl = level;
+			elevatorAnim.SetBool("open", true);
+
+			elevButtons[currentLvl].Activate(false);
+		}
+
+		// Elevator goes up if new level is higher than previous and vice versa
+		elevatorAnim.SetBool("up", level > prevLevel);
+
+		upArrow.SetActive(level > prevLevel);
+		downArrow.SetActive(level < prevLevel);
+
+		loading = true;
+		// Set click colour (only if confirmed click)
+		foreach (PointerButton eb in elevButtons)
+		{
+			if (eb != elevButtons[currentLvl] && eb.activated)
+			{
+				eb.ClickCol(false);
+			}
+			else if (eb.activated)
+			{
+				eb.ClickCol(true);
+			}
+		}
 	}
 
 	public void NextButton()
 	{
-		if (!loading && currentLvl < totalLevels)
+		if (prevLevel < totalLevels)
 		{
-			loading = true;
-			currentLvl++;
-			elevButtons[currentLvl].ClickCol(true);
-
-			if (elevatorAnim.GetBool("open"))
-			{ // If elevator open, wait for it to close
-				elevatorAnim.SetBool("open", false);
-				StartCoroutine(ElevatorLoad(currentLvl, 4f, NextLevel));
-			}
-			else
-			{ // If elevator already closed
-				StartCoroutine(ElevatorLoad(currentLvl, 3f, NextLevel));
-			}
+			currentLvl = prevLevel + 1;
+			PressButton(currentLvl);
 		}
 	}
 
 	public void PrevButton()
 	{
-		if (!loading && currentLvl != 0)
+		if (prevLevel != 0)
 		{
-			loading = true;
-			currentLvl--;
-			elevButtons[currentLvl].ClickCol(true);
-
-			if (elevatorAnim.GetBool("open"))
-			{ // If elevator open, wait for it to close
-				elevatorAnim.SetBool("open", false);
-				StartCoroutine(ElevatorLoad(currentLvl, 4f, NextLevel));
-			}
-			else
-			{ // If elevator already closed
-				StartCoroutine(ElevatorLoad(currentLvl, 3f, NextLevel));
-			}
+			currentLvl = prevLevel - 1;
+			PressButton(currentLvl);
 		}
 	}
 
@@ -136,12 +152,15 @@ public class GameManager : MonoBehaviour
 		}
 		elevButtons[currentLvl].Activate(false);
 
+		prevLevel = currentLvl;
+
 		hm.StartRoom(currentLvl);
 	}
 
 	// Load next scene around set pauses and run the given method when done
 	private IEnumerator ElevatorLoad(int index, float timeBeforeLoad, Action doAfter)
 	{
+		teleportBlocker.SetActive(true);
 		yield return new WaitForSeconds(timeBeforeLoad);
 
 		// Load scene
@@ -155,6 +174,7 @@ public class GameManager : MonoBehaviour
 		Cursor.visible = false;
 
 		yield return new WaitForSeconds(0.5f);
+		teleportBlocker.SetActive(false);
 		doAfter();
 	}
 }

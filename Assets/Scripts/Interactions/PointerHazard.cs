@@ -16,7 +16,6 @@ public class PointerHazard : PointerHandler
     [ColorUsage(true, true)] private Color highlightCol = new Color(0.6f, 0.5f, 0f, 1f);
     [ColorUsage(true, true)] private Color highlightDoneCol = new Color(0f, 0.745f, 0f, 1f);
     [ColorUsage(true, true)] private Color highlightWrongCol = new Color(0.745f, 0f, 0f, 1f);
-    private bool WebGLCols = true;
 
     // Highlighters objects to create
     private List<GameObject> highlightObjs = new List<GameObject>();
@@ -40,8 +39,18 @@ public class PointerHazard : PointerHandler
     // Layer index of object (to display through objects with depth camera)
     private readonly int highlightLayer = 8;
 
-    [Header("Optional: View through other objects")]
+    [Header("Optional Settings")]
+    [Tooltip("View highlight through other objects.")]
     public bool seeThrough = false;
+
+    // Alternate highlight methods
+    [Tooltip("Replace highlight object instead of using transparent material (only works on standard shader).")]
+    public bool replaceHighlight = true;
+    [Tooltip("Multiplier of highlight intensity.")]
+    public float highlightMultiplier = 1f;
+
+    // Highter intensity colours for WebGL build
+    private readonly bool WebGLCols = true;
 
     // Translation offset of effect
     [SerializeField] private Vector3 meshHoverTrans = Vector3.zero;
@@ -54,9 +63,9 @@ public class PointerHazard : PointerHandler
     {
         if (WebGLCols)
 		{
-            highlightCol = new Color(0.9f, 0.85f, 0.3f, 1f);
-            highlightDoneCol = new Color(0.4f, 0.9f, 0.2f, 1f);
-            highlightWrongCol = new Color(0.9f, 0.2f, 0.2f, 1f);
+            highlightCol = new Color(0.8f, 0.7f, 0.3f, 1f);
+            highlightDoneCol = new Color(0.3f, 0.8f, 0.1f, 1f);
+            highlightWrongCol = new Color(0.8f, 0.1f, 0.1f, 1f);
         }
 
         highlightObjs = CreateHighlightMeshes(highlightCol);
@@ -164,6 +173,13 @@ public class PointerHazard : PointerHandler
                 obj.SetActive(on);
             }
 
+            if (replaceHighlight)
+			{
+                // Disable highest parent mesh renderer
+                MeshRenderer[] mrs = obj.GetComponentsInParent<MeshRenderer>();
+                mrs[mrs.Length - 1].enabled = !on;
+            }
+
             // Set layer to view through objects
             if ((seeThrough && (!on || completed)) || flashing)
             {
@@ -189,28 +205,44 @@ public class PointerHazard : PointerHandler
             {
                 GameObject obj;
                 obj = Instantiate(rend.gameObject, rend.transform);
-                DestroyImmediate(obj.GetComponent<MeshRenderer>());
-                obj.AddComponent<MeshRenderer>();
+                //DestroyImmediate(obj.GetComponent<MeshRenderer>());
+                //obj.AddComponent<MeshRenderer>();
 
                 // Create a new material
-				Material mat = new Material(Shader.Find("Standard"));
+                Material mat;
+                if (replaceHighlight)
+                {
+                    mat = new Material(rend.material);
+                    
+                    // Ensure standard shader is used
+                    if (mat.shader != Shader.Find("Standard"))
+					{
+                        mat.shader = Shader.Find("Standard");
+                    }
+                }
+                else
+				{
+                    mat = new Material(Shader.Find("Standard"));
+                    mat.color *= 0.001f;
+
+                    // Change to transparent material
+                    mat.SetOverrideTag("RenderType", "Transparent");
+                    mat.SetFloat("_Mode", 3);
+                    mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                    mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                    mat.EnableKeyword("_ALPHABLEND_ON");
+                    mat.DisableKeyword("_ALPHATEST_ON");
+                    mat.SetInt("_ZWrite", 0);
+                    mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                }
 
                 // Remove color, smoothness, and activate set emission color
-                mat.color *= 0.001f;
                 mat.SetFloat("_Glossiness", 0f);
                 mat.EnableKeyword("_EMISSION");
-                mat.SetColor("_EmissionColor", col);
+                mat.SetColor("_EmissionColor", col * highlightMultiplier);
+                mat.color *= highlightMultiplier;
 
-                // Change to transparent material
-                mat.SetOverrideTag("RenderType", "Transparent");
-                mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                mat.SetFloat("_Mode", 3);
-                mat.EnableKeyword("_ALPHABLEND_ON");
-				mat.DisableKeyword("_ALPHATEST_ON");
-				mat.SetInt("_ZWrite", 0);
-				mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-				mat.renderQueue = 3100;
+                mat.renderQueue = 3100;
 
                 // Re-apply to refresh shader
                 //mat.shader = Shader.Find(mat.shader.name);
@@ -223,7 +255,6 @@ public class PointerHazard : PointerHandler
                 }
 
                 obj.transform.rotation = obj.transform.parent.rotation;
-
                 obj.GetComponent<Renderer>().material = mat;
 
                 // Offset scale and position

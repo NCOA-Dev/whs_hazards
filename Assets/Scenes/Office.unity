@@ -3787,6 +3787,7 @@ MonoBehaviour:
   - {fileID: 86088826}
   - {fileID: 86088825}
   - {fileID: 86088824}
+  teleportBlocker: {fileID: 0}
   hazards: []
 --- !u!114 &1439227989
 MonoBehaviour:
@@ -4993,12 +4994,17 @@ PrefabInstance:
     - target: {fileID: 1778113459078128441, guid: 1cb4c5849f527d64bb797c594a81916e,
         type: 3}
       propertyPath: m_text
-      value: Test 1
+      value: Office
       objectReference: {fileID: 0}
     - target: {fileID: 1778113459078128442, guid: 1cb4c5849f527d64bb797c594a81916e,
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -112.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1778113459078128443, guid: 1cb4c5849f527d64bb797c594a81916e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1778113459185389991, guid: 1cb4c5849f527d64bb797c594a81916e,
         type: 3}

@@ -285,6 +285,8 @@ MonoBehaviour:
   interactPause: 0.2
   hazardDesc: Boxes are cluttering the entrance
   seeThrough: 0
+  replaceHighlight: 0
+  highlightMultiplier: 1
   meshHoverTrans: {x: 0, y: 0, z: 0}
   meshHoverScale: {x: 1, y: 1, z: 1}
   ignoreOffsetMesh: {fileID: 0}
@@ -363,6 +365,8 @@ MonoBehaviour:
   interactPause: 0.2
   hazardDesc: Paper mess and slipping hazard
   seeThrough: 0
+  replaceHighlight: 1
+  highlightMultiplier: 0.8
   meshHoverTrans: {x: 0, y: 0, z: 0}
   meshHoverScale: {x: 1, y: 1, z: 1}
   ignoreOffsetMesh: {fileID: 0}
@@ -441,6 +445,8 @@ MonoBehaviour:
   interactPause: 0.2
   hazardDesc: Chair is dirty and too small
   seeThrough: 0
+  replaceHighlight: 1
+  highlightMultiplier: 1
   meshHoverTrans: {x: 0, y: 0, z: 0}
   meshHoverScale: {x: 1, y: 1, z: 1}
   ignoreOffsetMesh: {fileID: 0}
@@ -583,6 +589,8 @@ MonoBehaviour:
   interactPause: 0.2
   hazardDesc: Printer is close to the edge of left desk
   seeThrough: 0
+  replaceHighlight: 1
+  highlightMultiplier: 1.4
   meshHoverTrans: {x: 0, y: 0, z: 0}
   meshHoverScale: {x: 1.001, y: 1.001, z: 1.001}
   ignoreOffsetMesh: {fileID: 0}
@@ -757,6 +765,8 @@ MonoBehaviour:
   interactPause: 0.2
   hazardDesc: Workstation is too close to windows
   seeThrough: 0
+  replaceHighlight: 1
+  highlightMultiplier: 1
   meshHoverTrans: {x: 0.0001, y: 0.0001, z: -0.00001}
   meshHoverScale: {x: 1, y: 1, z: 1}
   ignoreOffsetMesh: {fileID: 5869263068014318282}
@@ -835,6 +845,8 @@ MonoBehaviour:
   interactPause: 0.2
   hazardDesc: Ceiling fan is old and lopsided
   seeThrough: 0
+  replaceHighlight: 1
+  highlightMultiplier: 1
   meshHoverTrans: {x: 0, y: 0, z: 0}
   meshHoverScale: {x: 1, y: 1, z: 1}
   ignoreOffsetMesh: {fileID: 0}

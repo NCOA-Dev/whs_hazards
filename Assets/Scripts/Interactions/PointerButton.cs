@@ -18,6 +18,7 @@ public class PointerButton : PointerHandler
     [SerializeField] [ColorUsage(true, true)] private Color hoverCol = Color.cyan;
     [SerializeField] [ColorUsage(true, true)] private Color clickCol = Color.green;
     public bool changeCol;
+    public bool activated = true;
 
     private Material btnMat;
     private Animator anim;
@@ -117,7 +118,8 @@ public class PointerButton : PointerHandler
 		{
             btnMat.SetColor("_EmissionColor", deactivCol);
         }
-        interactable = activ;
+        //interactable = activ;
+        activated = activ;
         changeCol = activ;
     }
 
@@ -127,7 +129,7 @@ public class PointerButton : PointerHandler
         {
             btnMat.SetColor("_EmissionColor", clickCol);
         }
-        else
+        else if (interactable)
         {
             btnMat.SetColor("_EmissionColor", activCol);
         }

@@ -180,6 +180,7 @@ MonoBehaviour:
   hoverCol: {r: 0, g: 1, b: 1, a: 1}
   clickCol: {r: 0, g: 1, b: 0, a: 1}
   changeCol: 1
+  activated: 1
 --- !u!136 &2994090935131199211
 CapsuleCollider:
   m_ObjectHideFlags: 0

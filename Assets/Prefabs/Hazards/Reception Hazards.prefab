@@ -75,6 +75,8 @@ MonoBehaviour:
   interactPause: 0.2
   hazardDesc: Test3
   seeThrough: 0
+  replaceHighlight: 0
+  highlightMultiplier: 1
   meshHoverTrans: {x: 0, y: 0, z: 0}
   meshHoverScale: {x: 1, y: 1, z: 1}
   ignoreOffsetMesh: {fileID: 0}
@@ -186,6 +188,8 @@ MonoBehaviour:
   interactPause: 0.2
   hazardDesc: Test2
   seeThrough: 0
+  replaceHighlight: 0
+  highlightMultiplier: 1
   meshHoverTrans: {x: 0, y: 0, z: 0}
   meshHoverScale: {x: 1, y: 1, z: 1}
   ignoreOffsetMesh: {fileID: 0}
@@ -264,6 +268,8 @@ MonoBehaviour:
   interactPause: 0.2
   hazardDesc: Test1
   seeThrough: 0
+  replaceHighlight: 0
+  highlightMultiplier: 1
   meshHoverTrans: {x: 0, y: 0, z: 0}
   meshHoverScale: {x: 1, y: 1, z: 1}
   ignoreOffsetMesh: {fileID: 0}
