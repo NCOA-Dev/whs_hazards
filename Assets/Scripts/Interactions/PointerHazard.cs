@@ -13,8 +13,8 @@ public class PointerHazard : PointerHandler
     //[SerializeField] private QnManager qm;
 
     // Highlight emission colours to swap between
-    [ColorUsage(true, true)] private Color highlightCol = new Color(0.6f, 0.5f, 0f, 1f);
-    [ColorUsage(true, true)] private Color highlightDoneCol = new Color(0f, 0.745f, 0f, 1f);
+    [ColorUsage(true, true)] private Color highlightCol = new Color(0.75f, 0.65f, 0.25f, 1f);
+    [ColorUsage(true, true)] private Color highlightDoneCol = new Color(0.1f, 0.75f, 0.1f, 1f);
     [ColorUsage(true, true)] private Color highlightWrongCol = new Color(0.745f, 0f, 0f, 1f);
 
     // Highlighters objects to create
@@ -49,8 +49,6 @@ public class PointerHazard : PointerHandler
     [Tooltip("Multiplier of highlight intensity.")]
     public float highlightMultiplier = 1f;
 
-    // Highter intensity colours for WebGL build
-    private readonly bool WebGLCols = true;
 
     // Translation offset of effect
     [SerializeField] private Vector3 meshHoverTrans = Vector3.zero;
@@ -61,8 +59,8 @@ public class PointerHazard : PointerHandler
 
     public virtual void Start()
     {
-        if (WebGLCols)
-		{
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+		{ // Alternate highlight colours for WebGL
             highlightCol = new Color(0.8f, 0.7f, 0.3f, 1f);
             highlightDoneCol = new Color(0.3f, 0.8f, 0.1f, 1f);
             highlightWrongCol = new Color(0.8f, 0.1f, 0.1f, 1f);

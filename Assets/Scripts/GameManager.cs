@@ -151,6 +151,8 @@ public class GameManager : MonoBehaviour
 			btn.Activate(true);
 		}
 		elevButtons[currentLvl].Activate(false);
+		upArrow.SetActive(false);
+		downArrow.SetActive(false);
 
 		prevLevel = currentLvl;
 

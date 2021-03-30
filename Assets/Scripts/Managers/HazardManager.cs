@@ -64,35 +64,35 @@ public class HazardManager : MonoBehaviour
     {
         // Clone hazard texts
         allHazardDescs = new List<string>[totalRooms];
-        allHazardDescs[0] = new List<string>(hazardDescsStorage);
+        allHazardDescs[0] = new List<string>(hazardDescsReception);
         allHazardDescs[1] = new List<string>(hazardDescsOffice);
-        allHazardDescs[2] = new List<string>(hazardDescsReception);
+        allHazardDescs[2] = new List<string>(hazardDescsStorage);
 
         // Instantiate attempt arrays
         allRiskAttempts = new int[totalRooms][];
         allResponseAttempts = new Vector2[totalRooms][];
-        allRiskAttempts[0] = new int[riskAnswersStorage.Length];
-        allResponseAttempts[0] = new Vector2[responseAnswersStorage.Length];
+        allRiskAttempts[0] = new int[riskAnswersReception.Length];
+        allResponseAttempts[0] = new Vector2[responseAnswersReception.Length];
         allRiskAttempts[1] = new int[riskAnswersOffice.Length];
         allResponseAttempts[1] = new Vector2[responseAnswersOffice.Length];
-        allRiskAttempts[2] = new int[riskAnswersReception.Length];
-        allResponseAttempts[2] = new Vector2[responseAnswersReception.Length];
+        allRiskAttempts[2] = new int[riskAnswersStorage.Length];
+        allResponseAttempts[2] = new Vector2[responseAnswersStorage.Length];
 
         // Instantiate answer arrays
         allRiskAnswers = new int[totalRooms][];
         allResponseAnswers = new Vector2[totalRooms][];
-        allRiskAnswers[0] = riskAnswersStorage;
-        allResponseAnswers[0] = responseAnswersStorage;
+        allRiskAnswers[0] = riskAnswersReception;
+        allResponseAnswers[0] = responseAnswersReception;
         allRiskAnswers[1] = riskAnswersOffice;
         allResponseAnswers[1] = responseAnswersOffice;
-        allRiskAnswers[2] = riskAnswersReception;
-        allResponseAnswers[2] = responseAnswersReception;
+        allRiskAnswers[2] = riskAnswersStorage;
+        allResponseAnswers[2] = responseAnswersStorage;
 
         // Instantiate results arrays
         allResults = new bool[totalRooms][,];
-        allResults[0] = new bool[riskAnswersStorage.Length, 3];
+        allResults[0] = new bool[riskAnswersReception.Length, 3];
         allResults[1] = new bool[riskAnswersOffice.Length, 3];
-        allResults[2] = new bool[riskAnswersReception.Length, 3];
+        allResults[2] = new bool[riskAnswersStorage.Length, 3];
 
         roomProgress = new int[totalRooms];
 

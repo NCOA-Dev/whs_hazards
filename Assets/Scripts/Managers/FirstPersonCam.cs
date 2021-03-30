@@ -4,18 +4,19 @@ using System.Collections;
 public class FirstPersonCam : MonoBehaviour
 {
     [Header("Horizontal and Vertical Look Speeds")]
-    public float speedH = 2.0f;
-    public float speedV = 2.0f;
+    private float speedH = 2.0f;
+    private float speedV = 2.0f;
     private float yaw;
     private float pitch;
 
 	void Update()
     {
-        // Editor-only speed
-        #if UNITY_EDITOR
-            speedH = 2;
-            speedV = 2;
-        #endif
+        // WebGL-only speed
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+		{
+            speedH = 1f;
+            speedV = 1f;
+        }
 
         yaw += speedH * Input.GetAxis("Mouse X");
         pitch -= speedV * Input.GetAxis("Mouse Y");
