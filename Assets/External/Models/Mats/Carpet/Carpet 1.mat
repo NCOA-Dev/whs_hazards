@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Carpet 1
   m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: _NORMALMAP
+  m_ShaderKeywords: _DETAIL_MULX2 _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -20,11 +20,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 9018c15e1f84b6d408e6421d28edf00e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1d57d5b37aa684c41a29b72ffca22145, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: edb11090ef316aa45b432597ef2d9117, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailMask:
@@ -40,7 +40,7 @@ Material:
         m_Scale: {x: 3, y: 2.2}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 485912fd07c6ca7499e79a653a8b6b59, type: 3}
+        m_Texture: {fileID: 2800000, guid: c98006bc312a25a43bde6ffc37ca32ed, type: 3}
         m_Scale: {x: 3, y: 2.2}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -73,5 +73,5 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.8443396, g: 0.93773586, b: 1, a: 1}
+    - _Color: {r: 0.9103774, g: 0.96415097, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

@@ -9,6 +9,9 @@ public class Player : MonoBehaviour
     public static Player Instance;
     [HideInInspector] public Camera cam;
 
+    [Tooltip("Disable the automatic VR click (for PC builds).")]
+    public bool disableClick = false;
+
     [SerializeField] private Teleporter homeTp;
     private Teleporter prevTp;
 
@@ -169,20 +172,27 @@ public class Player : MonoBehaviour
 
     private IEnumerator HoverPause()
 	{
-        isPaused = true;
-        yield return new WaitForSeconds(0.2f);
-        if (!ringBase.activeSelf)
-        {
-            ringBase.SetActive(true);
-        }
+        if (disableClick)
+		{
+            yield return null;
+		}
+        else
+		{
+            isPaused = true;
+            yield return new WaitForSeconds(0.2f);
+            if (!ringBase.activeSelf)
+            {
+                ringBase.SetActive(true);
+            }
 
-        yield return new WaitForSeconds(0.4f);
+            yield return new WaitForSeconds(0.4f);
 
-        isPaused = false;
-        if (ringBase && isHovering)
-        {
-            ringBase.SetActive(true);
-            hasPaused = true;
+            isPaused = false;
+            if (ringBase && isHovering)
+            {
+                ringBase.SetActive(true);
+                hasPaused = true;
+            }
         }
     }
 

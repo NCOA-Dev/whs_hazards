@@ -6,10 +6,10 @@ public class Teleporter : PointerHandler
 {
 	[Header("Teleporter Only Variables")]
 	[SerializeField] public GameObject teleportLocation;
-	[HideInInspector] public GameObject tube;
+	[SerializeField] public GameObject tube;
 
 	[Header("Material Variables")]
-	private Material objMat;
+	private Material[] objMats;
 	public bool changeColor = true;
 	public Color origCol = Color.white;
 	public Color hoverCol = Color.white;
@@ -18,7 +18,6 @@ public class Teleporter : PointerHandler
 	// Start is called before the first frame update
 	void Awake()
     {
-		objMat = GetComponent<Renderer>().material;
 
 		// Initialize custom trigger events
 		AddEventTriggerListener(
@@ -34,17 +33,18 @@ public class Teleporter : PointerHandler
             EventTriggerType.PointerClick,
             OnClick);
 
-		tube = this.gameObject;
+		//tube = this.gameObject;
+		objMats = tube.GetComponent<Renderer>().materials;
 	}
 
 
-    public new virtual void OnHover(BaseEventData eventData)
+	public new virtual void OnHover(BaseEventData eventData)
     {
         base.OnHover(eventData);
 
 		if (changeColor)
 		{
-			objMat.SetColor("_EmissionColor", hoverCol);
+			SetMeshCols(hoverCol);
 		}
 
 		interactable = true;
@@ -56,7 +56,7 @@ public class Teleporter : PointerHandler
 
 		if (changeColor)
 		{
-			objMat.SetColor("_EmissionColor", origCol);
+			SetMeshCols(origCol);
 		}
 	}
 
@@ -65,7 +65,7 @@ public class Teleporter : PointerHandler
     {
 		if (changeColor)
 		{
-			objMat.SetColor("_EmissionColor", origCol);
+			SetMeshCols(origCol);
 		}
 
 		if (transform.CompareTag("Teleporter"))
@@ -79,5 +79,13 @@ public class Teleporter : PointerHandler
 	public new void Click(BaseEventData data)
 	{
 		OnClick(data);
+	}
+
+	private void SetMeshCols(Color col)
+	{
+		foreach (Material mat in objMats)
+		{
+			mat.SetColor("_EmissionColor", col);
+		}
 	}
 }
