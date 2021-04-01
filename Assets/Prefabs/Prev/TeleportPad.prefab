@@ -457,5 +457,5 @@ MonoBehaviour:
   tube: {fileID: 553262020945575647}
   changeColor: 1
   origCol: {r: 0, g: 0.30913922, b: 0.5660378, a: 1}
-  hoverCol: {r: 0.21266466, g: 0.28434506, b: 0.764151, a: 1}
+  hoverCol: {r: 0.41798684, g: 0.47902232, b: 0.8773585, a: 1}
   clickCol: {r: 0, g: 0, b: 0, a: 0}

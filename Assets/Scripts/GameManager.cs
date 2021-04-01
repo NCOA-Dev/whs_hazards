@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private GameObject teleportBlocker;
 	[SerializeField] private GameObject upArrow;
 	[SerializeField] private GameObject downArrow;
+	[SerializeField] private GameObject[] teleporters;
 
 	[Header("Hazard Objects")]
 	[SerializeField] private GameObject[] hazards;
@@ -41,16 +42,35 @@ public class GameManager : MonoBehaviour
 		}
 
 		elevButtons[0].Activate(false);
+
+		foreach (GameObject teleporter in teleporters)
+		{
+			teleporter.SetActive(false);
+		}
 	}
 
 	private void Update()
 	{
 		// Lock cursor
-		if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked)
+		if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked && CursorOnScreen())
 		{
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
+
+#if UNITY_WEBGL
+			Resolution resolution = Screen.resolutions[Screen.resolutions.Length - 1];
+			Screen.SetResolution(resolution.width, resolution.height, true);
+#endif
 		}
+
+
+
+
+	}
+
+	private bool CursorOnScreen()
+	{
+		return Input.mousePosition.x > 0 && Input.mousePosition.y > 0 && Input.mousePosition.x < Screen.width - 1 & Input.mousePosition.y < Screen.height - 1;
 	}
 
 	public void PressButton(int level)
@@ -133,6 +153,11 @@ public class GameManager : MonoBehaviour
 	private void NextLevel()
 	{
 		stageText.text = "Floor " + currentLvl;
+		if (currentLvl == 0)
+		{
+			stageText.text = "Ground";
+		}
+
 		elevatorAnim.SetBool("open", true);
 		loading = false;
 
@@ -143,6 +168,18 @@ public class GameManager : MonoBehaviour
 		if (currentLvl >= 1)
 		{
 			hazards[currentLvl - 1].SetActive(true);
+
+			foreach (GameObject teleporter in teleporters)
+			{
+				teleporter.SetActive(true);
+			}
+		}
+		else
+		{
+			foreach (GameObject teleporter in teleporters)
+			{
+				teleporter.SetActive(false);
+			}
 		}
 
 		// Disable pressed button and enable others

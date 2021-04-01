@@ -280,6 +280,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TeleportPad
       objectReference: {fileID: 0}
+    - target: {fileID: 8487063917473205894, guid: 130b19e0bfa01bd45bca3c8293a03f16,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8487063917473205895, guid: 130b19e0bfa01bd45bca3c8293a03f16,
         type: 3}
       propertyPath: m_RootOrder
@@ -5712,6 +5717,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: HomePad Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 9049217538550464130, guid: b76d82821e00b014a8d91d0d27730ed1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9049217538550464131, guid: b76d82821e00b014a8d91d0d27730ed1,
         type: 3}
