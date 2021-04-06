@@ -444,6 +444,21 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 474973333328420535, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.b
+      value: 0.617257
+      objectReference: {fileID: 0}
+    - target: {fileID: 474973333328420535, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.g
+      value: 0.8447716
+      objectReference: {fileID: 0}
+    - target: {fileID: 474973333328420535, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.r
+      value: 0.9150943
+      objectReference: {fileID: 0}
     - target: {fileID: 493999208364704995, guid: 18e1967848f5b0a42b00657b4d9af9eb,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -568,6 +583,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ClearFlags
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 632317111131812648, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 646831174979719262, guid: 18e1967848f5b0a42b00657b4d9af9eb,
         type: 3}
@@ -944,6 +964,11 @@ PrefabInstance:
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 2559956823641723701, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2762963324298822409, guid: 18e1967848f5b0a42b00657b4d9af9eb,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -1028,6 +1053,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3299898340874682267, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.b
+      value: 0.617257
+      objectReference: {fileID: 0}
+    - target: {fileID: 3299898340874682267, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.g
+      value: 0.8447716
+      objectReference: {fileID: 0}
+    - target: {fileID: 3299898340874682267, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.r
+      value: 0.9150943
       objectReference: {fileID: 0}
     - target: {fileID: 3327344777782832090, guid: 18e1967848f5b0a42b00657b4d9af9eb,
         type: 3}
@@ -1124,6 +1164,21 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4361799252972928034, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.b
+      value: 0.617257
+      objectReference: {fileID: 0}
+    - target: {fileID: 4361799252972928034, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.g
+      value: 0.8447716
+      objectReference: {fileID: 0}
+    - target: {fileID: 4361799252972928034, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.r
+      value: 0.9150943
+      objectReference: {fileID: 0}
     - target: {fileID: 4378531289375103189, guid: 18e1967848f5b0a42b00657b4d9af9eb,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1153,6 +1208,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4735466123680690862, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.b
+      value: 0.617257
+      objectReference: {fileID: 0}
+    - target: {fileID: 4735466123680690862, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.g
+      value: 0.8447716
+      objectReference: {fileID: 0}
+    - target: {fileID: 4735466123680690862, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.r
+      value: 0.9150943
       objectReference: {fileID: 0}
     - target: {fileID: 4967721741375535756, guid: 18e1967848f5b0a42b00657b4d9af9eb,
         type: 3}
@@ -1233,6 +1303,21 @@ PrefabInstance:
         type: 3}
       propertyPath: hazards.Array.data[2]
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5301480052042125704, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.b
+      value: 0.617257
+      objectReference: {fileID: 0}
+    - target: {fileID: 5301480052042125704, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.g
+      value: 0.8447716
+      objectReference: {fileID: 0}
+    - target: {fileID: 5301480052042125704, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.r
+      value: 0.9150943
       objectReference: {fileID: 0}
     - target: {fileID: 5364718231828196627, guid: 18e1967848f5b0a42b00657b4d9af9eb,
         type: 3}
@@ -1429,6 +1514,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7565152177453533093, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.b
+      value: 0.617257
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565152177453533093, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.g
+      value: 0.8447716
+      objectReference: {fileID: 0}
+    - target: {fileID: 7565152177453533093, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: hoverCol.r
+      value: 0.9150943
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587833325228649749, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7615994598054651955, guid: 18e1967848f5b0a42b00657b4d9af9eb,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1493,6 +1598,41 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528108070933654440, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528108070933654440, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528108070933654440, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528108070933654440, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528108070933654440, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528108070933654440, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8546221007713986182, guid: 18e1967848f5b0a42b00657b4d9af9eb,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0.2627451
       objectReference: {fileID: 0}
     - target: {fileID: 8602464792687395710, guid: 18e1967848f5b0a42b00657b4d9af9eb,
         type: 3}

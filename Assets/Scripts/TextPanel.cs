@@ -9,6 +9,10 @@ public class TextPanel : MonoBehaviour
     public TMP_Text[] hazardTextBoxes;
     public UIPointerHandler[] riskBoxes;
     public UIPointerHandler[] responseBoxes;
+    public UIPointerHandler[] feedbackButtons;
+    public GameObject[] feedbackTexts;
+    public TMP_Text[] feedbackTextBoxes;
+    public RectTransform[] feedbackArrows;
 
     public void SetActive(bool activ)
 	{

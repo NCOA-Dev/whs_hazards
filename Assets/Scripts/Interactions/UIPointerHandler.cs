@@ -223,6 +223,10 @@ public class UIPointerHandler : MonoBehaviour
 		{
             img.color = origCol;
 		}
+        if (hovering && changeColor)
+		{
+            img.color = hoverCol;
+        }
     }
 
     public void Click(BaseEventData data)

@@ -4077,6 +4077,7 @@ MonoBehaviour:
   teleportBlocker: {fileID: 0}
   upArrow: {fileID: 0}
   downArrow: {fileID: 0}
+  teleporters: []
   hazards: []
 --- !u!114 &1439227989
 MonoBehaviour:

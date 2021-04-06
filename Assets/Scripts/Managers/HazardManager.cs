@@ -20,20 +20,23 @@ public class HazardManager : MonoBehaviour
     [SerializeField] private TMP_Text locationText;
     [SerializeField] private GameObject dateText;
 
-    [Header("Storage Room")]
-    [SerializeField] private List<string> hazardDescsStorage;
-    [SerializeField] private int[] riskAnswersStorage;
-    [SerializeField] private Vector2[] responseAnswersStorage;
+    [Header("Reception")]
+    [SerializeField] private List<string> hazardDescsReception;
+    [SerializeField] private int[] riskAnswersReception;
+    [SerializeField] private Vector2[] responseAnswersReception;
+    [SerializeField] private List<string> hazardFeedbackReception;
 
     [Header("Office")]
     [SerializeField] private List<string> hazardDescsOffice;
     [SerializeField] private int[] riskAnswersOffice;
     [SerializeField] private Vector2[] responseAnswersOffice;
+    [SerializeField] private List<string> hazardFeedbackOffice;
 
-    [Header("Reception")]
-    [SerializeField] private List<string> hazardDescsReception;
-    [SerializeField] private int[] riskAnswersReception;
-    [SerializeField] private Vector2[] responseAnswersReception;
+    [Header("Storage Room")]
+    [SerializeField] private List<string> hazardDescsStorage;
+    [SerializeField] private int[] riskAnswersStorage;
+    [SerializeField] private Vector2[] responseAnswersStorage;
+    [SerializeField] private List<string> hazardFeedbackStorage;
 
     [Header("Scene Tracking Variables")]
     [Tooltip("Location name for the scene of equal array index to scene index. Menu scenes should be blank.")]
@@ -54,6 +57,7 @@ public class HazardManager : MonoBehaviour
     // Room combination variables
     private List<TextPanel> allTextPanels;
     private List<string>[] allHazardDescs;
+    private List<string>[] allHazardFeedback;
     private int[][] allRiskAnswers;
     private Vector2[][] allResponseAnswers;
     private int[][] allRiskAttempts;
@@ -94,6 +98,12 @@ public class HazardManager : MonoBehaviour
         allResults[1] = new bool[riskAnswersOffice.Length, 3];
         allResults[2] = new bool[riskAnswersStorage.Length, 3];
 
+        // Clone feedback texts
+        allHazardFeedback = new List<string>[totalRooms];
+        allHazardFeedback[0] = new List<string>(hazardFeedbackReception);
+        allHazardFeedback[1] = new List<string>(hazardFeedbackOffice);
+        allHazardFeedback[2] = new List<string>(hazardFeedbackStorage);
+
         roomProgress = new int[totalRooms];
 
         // Fill attempt arrays with -1 to track if attempted
@@ -106,6 +116,11 @@ public class HazardManager : MonoBehaviour
                 allResponseAttempts[i][j].y = -1;
             }
         }
+
+        foreach (UIPointerHandler feedbackBtn in textPanel.feedbackButtons)
+		{
+            feedbackBtn.gameObject.SetActive(false);
+		}
 
         // Create reports with total rooms
         CreateReports(totalRooms);
@@ -158,8 +173,11 @@ public class HazardManager : MonoBehaviour
 			textPanel.riskBoxes[roomProgress[currentRoom]].interactable = true;
 			textPanel.responseBoxes[roomProgress[currentRoom]].interactable = true;
 
-			// Increment progress
-			roomProgress[currentRoom]++;
+            // Activate feedback buttons
+            textPanel.feedbackButtons[roomProgress[currentRoom]].gameObject.SetActive(true);
+
+            // Increment progress
+            roomProgress[currentRoom]++;
 		}
 		else
 		{
@@ -360,10 +378,30 @@ public class HazardManager : MonoBehaviour
 
 		StartCoroutine(WaitThenActivate(0.4f, responsePanel, false));
     }
-	#endregion
+    #endregion
 
-	#region private
-	// Duplicate report info for each room
+    #region feedback
+
+    // Triggered by feedback buttons
+    public void PressFeedbackBtn(int index)
+    {
+        if (textPanel.feedbackTexts[index] != null && textPanel.feedbackTextBoxes[index] != null)
+		{ 
+            // Enable/disable feedback
+            textPanel.feedbackTexts[index].SetActive(!textPanel.feedbackTexts[index].activeSelf);
+
+            // Reverse arrows
+            textPanel.feedbackArrows[index].localScale = new Vector3(textPanel.feedbackArrows[index].localScale.x * -1, 1, 1);
+
+            // Set text
+            textPanel.feedbackTextBoxes[index].text = allHazardFeedback[currentRoom][IndexOf(index)];
+        }
+    }
+
+    #endregion
+
+    #region private
+    // Duplicate report info for each room
     private void CreateReports(int rooms)
 	{
         allTextPanels = new List<TextPanel>();

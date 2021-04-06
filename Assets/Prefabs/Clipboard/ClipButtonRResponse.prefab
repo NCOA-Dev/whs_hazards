@@ -132,5 +132,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: ClipButtonRResponse
       objectReference: {fileID: 0}
+    - target: {fileID: 8139936354140794678, guid: f5f58314d95413a4a9397ec0609ec60e,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -20.000002
+      objectReference: {fileID: 0}
+    - target: {fileID: 8139936354140794678, guid: f5f58314d95413a4a9397ec0609ec60e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -1.999999
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5f58314d95413a4a9397ec0609ec60e, type: 3}
