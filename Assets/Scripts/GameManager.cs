@@ -62,10 +62,6 @@ public class GameManager : MonoBehaviour
 			Screen.SetResolution(resolution.width, resolution.height, true);
 #endif
 		}
-
-
-
-
 	}
 
 	private bool CursorOnScreen()
