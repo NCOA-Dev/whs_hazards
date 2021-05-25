@@ -38,6 +38,12 @@ public class HazardManager : MonoBehaviour
     [SerializeField] private Vector2[] responseAnswersStorage;
     [SerializeField] private List<string> hazardFeedbackStorage;
 
+    [Header("Gym Room")]
+    [SerializeField] private List<string> hazardDescsGym;
+    [SerializeField] private int[] riskAnswersGym;
+    [SerializeField] private Vector2[] responseAnswersGym;
+    [SerializeField] private List<string> hazardFeedbackGym;
+
     [Header("Scene Tracking Variables")]
     [Tooltip("Location name for the scene of equal array index to scene index. Menu scenes should be blank.")]
     [SerializeField] private string[] locationNames;
@@ -51,7 +57,7 @@ public class HazardManager : MonoBehaviour
     // Room state tracking
     private int currentRoom = 0;
     private int[] roomProgress;
-    private readonly int totalRooms = 3;
+    private readonly int totalRooms = 4;
     private int selectedRow = 0;
 
     // Room combination variables
@@ -71,6 +77,7 @@ public class HazardManager : MonoBehaviour
         allHazardDescs[0] = new List<string>(hazardDescsReception);
         allHazardDescs[1] = new List<string>(hazardDescsOffice);
         allHazardDescs[2] = new List<string>(hazardDescsStorage);
+        allHazardDescs[3] = new List<string>(hazardDescsGym);
 
         // Instantiate attempt arrays
         allRiskAttempts = new int[totalRooms][];
@@ -81,6 +88,8 @@ public class HazardManager : MonoBehaviour
         allResponseAttempts[1] = new Vector2[responseAnswersOffice.Length];
         allRiskAttempts[2] = new int[riskAnswersStorage.Length];
         allResponseAttempts[2] = new Vector2[responseAnswersStorage.Length];
+        allRiskAttempts[3] = new int[riskAnswersGym.Length];
+        allResponseAttempts[3] = new Vector2[responseAnswersGym.Length];
 
         // Instantiate answer arrays
         allRiskAnswers = new int[totalRooms][];
@@ -91,18 +100,22 @@ public class HazardManager : MonoBehaviour
         allResponseAnswers[1] = responseAnswersOffice;
         allRiskAnswers[2] = riskAnswersStorage;
         allResponseAnswers[2] = responseAnswersStorage;
+        allRiskAnswers[3] = riskAnswersGym;
+        allResponseAnswers[3] = responseAnswersGym;
 
         // Instantiate results arrays
         allResults = new bool[totalRooms][,];
         allResults[0] = new bool[riskAnswersReception.Length, 3];
         allResults[1] = new bool[riskAnswersOffice.Length, 3];
         allResults[2] = new bool[riskAnswersStorage.Length, 3];
+        allResults[3] = new bool[riskAnswersGym.Length, 3];
 
         // Clone feedback texts
         allHazardFeedback = new List<string>[totalRooms];
         allHazardFeedback[0] = new List<string>(hazardFeedbackReception);
         allHazardFeedback[1] = new List<string>(hazardFeedbackOffice);
         allHazardFeedback[2] = new List<string>(hazardFeedbackStorage);
+        allHazardFeedback[3] = new List<string>(hazardFeedbackGym);
 
         roomProgress = new int[totalRooms];
 

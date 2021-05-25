@@ -48,6 +48,8 @@ public class PointerHazard : PointerHandler
     public bool replaceHighlight = true;
     [Tooltip("Multiplier of highlight intensity.")]
     public float highlightMultiplier = 1f;
+    [Tooltip("Whether to replace all materials with highlight materials.")]
+    public bool highlightAllMaterials = false;
 
 
     // Translation offset of effect
@@ -206,45 +208,50 @@ public class PointerHazard : PointerHandler
                 //DestroyImmediate(obj.GetComponent<MeshRenderer>());
                 //obj.AddComponent<MeshRenderer>();
 
-                // Create a new material
-                Material mat;
-                if (replaceHighlight)
+                Material[] mats = rend.materials;
+
+                int count = highlightAllMaterials ? rend.materials.Length : 1;
+                for (int i = 0; i < count; i++)
                 {
-                    mat = new Material(rend.material);
-                    
-                    // Ensure standard shader is used
-                    if (mat.shader != Shader.Find("Standard"))
-					{
-                        mat.shader = Shader.Find("Standard");
+                    // Create a new material
+                    if (replaceHighlight)
+                    {
+                        mats[i] = new Material(rend.materials[i]);
+
+                        // Ensure standard shader is used
+                        if (mats[i].shader != Shader.Find("Standard"))
+                        {
+                            mats[i].shader = Shader.Find("Standard");
+                        }
                     }
+                    else
+                    {
+                        mats[i] = new Material(Shader.Find("Standard"));
+                        mats[i].color *= 0.001f;
+
+                        // Change to transparent material
+                        mats[i].SetOverrideTag("RenderType", "Transparent");
+                        mats[i].SetFloat("_Mode", 3);
+                        mats[i].SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                        mats[i].SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                        mats[i].EnableKeyword("_ALPHABLEND_ON");
+                        mats[i].DisableKeyword("_ALPHATEST_ON");
+                        mats[i].SetInt("_ZWrite", 0);
+                        mats[i].DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                    }
+
+                    // Remove color, smoothness, and activate set emission color
+                    mats[i].SetFloat("_Glossiness", 0f);
+                    mats[i].EnableKeyword("_EMISSION");
+                    mats[i].SetColor("_EmissionColor", col * highlightMultiplier);
+                    mats[i].color *= highlightMultiplier;
+
+                    mats[i].renderQueue = 3100;
+
+                    // Re-apply to refresh shader
+                    //mat.shader = Shader.Find(mat.shader.name);
+                    mats[i].EnableKeyword("_EMISSION");
                 }
-                else
-				{
-                    mat = new Material(Shader.Find("Standard"));
-                    mat.color *= 0.001f;
-
-                    // Change to transparent material
-                    mat.SetOverrideTag("RenderType", "Transparent");
-                    mat.SetFloat("_Mode", 3);
-                    mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                    mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                    mat.EnableKeyword("_ALPHABLEND_ON");
-                    mat.DisableKeyword("_ALPHATEST_ON");
-                    mat.SetInt("_ZWrite", 0);
-                    mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                }
-
-                // Remove color, smoothness, and activate set emission color
-                mat.SetFloat("_Glossiness", 0f);
-                mat.EnableKeyword("_EMISSION");
-                mat.SetColor("_EmissionColor", col * highlightMultiplier);
-                mat.color *= highlightMultiplier;
-
-                mat.renderQueue = 3100;
-
-                // Re-apply to refresh shader
-                //mat.shader = Shader.Find(mat.shader.name);
-                mat.EnableKeyword("_EMISSION");
 
                 // Remove new object's children
                 foreach (Transform child in obj.transform)
@@ -253,7 +260,7 @@ public class PointerHazard : PointerHandler
                 }
 
                 obj.transform.rotation = obj.transform.parent.rotation;
-                obj.GetComponent<Renderer>().material = mat;
+                obj.GetComponent<Renderer>().materials = mats;
 
                 // Offset scale and position
                 obj.transform.localScale = meshHoverScale;
@@ -262,7 +269,7 @@ public class PointerHazard : PointerHandler
                 if (ignoreOffsetMesh != null)
                 {
                     if (rend == ignoreOffsetMesh)
-					{
+                    {
                         obj.transform.localScale = Vector3.one;
                         obj.transform.localPosition = Vector3.zero;
                     }

@@ -893,7 +893,7 @@ MonoBehaviour:
   subpixelMorphologicalAntialiasing:
     quality: 2
   fastApproximateAntialiasing:
-    fastMode: 0
+    fastMode: 1
     keepAlpha: 0
   fog:
     enabled: 1
@@ -7084,8 +7084,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.26, y: 0.01, z: 0.37}
-  m_Center: {x: 0, y: 0.03, z: 0.16}
+  m_Size: {x: 0.26, y: 0.01, z: 0.35}
+  m_Center: {x: 0, y: 0.035, z: 0.18}
 --- !u!1 &3659829314147895546
 GameObject:
   m_ObjectHideFlags: 0
@@ -9785,8 +9785,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5364718231828196627}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.018343667, y: -0, z: -0, w: 0.9998318}
+  m_LocalPosition: {x: 0, y: -0.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5474898485604691986}
@@ -9919,11 +9919,40 @@ MonoBehaviour:
     up and reported.
   - This shelf is rusty and could fall apart and cause damage. It should be isolated
     and reported to be dealt with safely.
+  hazardDescsGym:
+  - Dumbbell placed on rack incorrectly
+  - Barbell is racked with weights on the bar
+  - Dummbells are not put away and are a trip hazard
+  - Water fountain is placed next to electrical socket
+  - Bar is stored high in precarious position
+  - A towel has been left on the treadmill
+  riskAnswersGym: 010000000000000000000000020000000100000000000000
+  responseAnswersGym:
+  - {x: 0, y: 1}
+  - {x: 0, y: 1}
+  - {x: 0, y: 1}
+  - {x: 2, y: 2}
+  - {x: 0, y: 1}
+  - {x: 0, y: 1}
+  hazardFeedbackGym:
+  - This dumbbell is stored on its rack incorrectly and should corrected to prevent
+    the dummbell falling on a users foot.
+  - Weights have been left on this bar and should be stored away to prevent them
+    falling and causing damage.
+  - These dumbbells have been left on the floor in an entrance way and are a tripping
+    hazard that should be mitigated.
+  - The water fountain being near an electrical socket is a major electrocution hazard.
+    It should be isolated and reported to management.
+  - 'A bar is stored on top of the squat rack, which should be stored properly before
+    it falls on someone as they try to get it back down. '
+  - A dirty towel has been left on the treadmill, which becomes an infection hazard
+    if not cleaned up quickly.
   locationNames:
   - 
   - Reception
   - Office
   - Storage Room
+  - Gym
 --- !u!1 &5580003780135357917
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ using UnityEngine;
 public class Clipboard : MonoBehaviour
 {
     Transform parent;
+    Vector3 startOffset;
     [SerializeField] private GameObject player;
 
     private bool lookingAtClipboard = false;
@@ -17,7 +18,8 @@ public class Clipboard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        parent = this.transform.parent;
+        parent = transform.parent;
+        startOffset = transform.localPosition;
     }
 
     void Update()
@@ -31,7 +33,7 @@ public class Clipboard : MonoBehaviour
             Quaternion rotateTo = Quaternion.Euler(0, player.transform.eulerAngles.y, 0);
 			transform.rotation = Quaternion.Lerp(transform.rotation, rotateTo, 4f * Time.deltaTime);
 
-            if (Mathf.Abs(transform.eulerAngles.y - player.transform.eulerAngles.y) < 1f)
+            if (Mathf.Abs(transform.eulerAngles.y - player.transform.eulerAngles.y) < 0.5f)
 			{ // Set the parent - ending this rotation
                 transform.parent = parent;
             }
@@ -42,7 +44,7 @@ public class Clipboard : MonoBehaviour
         }
 
         // Ensure clipboard isn't lost when player moves
-        transform.position = parent.transform.position;
+        transform.position = parent.transform.position + startOffset;
     }
 
     public void Looking(bool looking)

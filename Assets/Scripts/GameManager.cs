@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
 
 	private int currentLvl = 0;
 	private int prevLevel = 0;
-	private readonly int totalLevels = 3;
+	private readonly int totalLevels = 4;
 	private bool loading = false;
 	private int floorsToNextLevel = 0;
 
