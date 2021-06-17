@@ -24,7 +24,6 @@ public class GameManager : MonoBehaviour
 	private int prevLevel = 0;
 	private readonly int totalLevels = 4;
 	private bool loading = false;
-	private int floorsToNextLevel = 0;
 
 	private void Awake()
 	{
@@ -73,7 +72,6 @@ public class GameManager : MonoBehaviour
 	{
 		if (!loading && prevLevel != level)
 		{
-			floorsToNextLevel = Mathf.Abs(currentLvl - level);
 			currentLvl = level;
 
 			if (elevatorAnim.GetBool("open"))
